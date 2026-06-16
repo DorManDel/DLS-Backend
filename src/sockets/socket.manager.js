@@ -102,10 +102,10 @@ function emitQuestionCreated(question) {
     }
 
     const roomName = createPresentationRoom(question.presentationId);
-    
-    console.log(`Socket emit question:created -> ${question.id}`);
 
-    ioInstance.emit("question:created", question);
+    console.log(`Socket emit question:created -> ${question.id} -> ${roomName}`);
+
+    ioInstance.to(roomName).emit("question:created", question);
 }
 
 
@@ -117,3 +117,33 @@ module.exports = {
     setupSocketServer,
     emitQuestionCreated
 };
+
+/* 
+TEST:
+---
+open 1 socket: http://localhost:3000/socket-test.html?presentationId=demo-presentation
+open 2 socket: http://localhost:3000/socket-test.html?presentationId=other-presentation
+---
+
+in POSTMAN:
+POST http://localhost:3000/api/questions
+{
+  "presentationId": "demo-presentation",
+  "fileName": "demo.pdf",
+  "page": 2,
+  "x": 0.42,
+  "y": 0.31,
+  "text": "Room isolation test",
+  "color": "#ff2f6d",
+  "studentName": "Anonymous",
+  "isAnonymous": true
+}
+
+---
+demo-presentation tab
+    receives question:created
+
+other-presentation tab
+    does NOT receive question:created
+---
+*/

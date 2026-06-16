@@ -31,7 +31,15 @@
 
         const socket = io();
 
-        const PRESENTATION_ID = "demo-presentation";
+        /* PRESENTATION_ID = Read from URL query string 
+            Ex.:
+                /socket-test.html?presentationId=demo-presentation
+                /socket-test.html?presentationId=other-presentation
+        */
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const PRESENTATION_ID =
+            urlParams.get("presentationId") || "demo-presentation";
 
         const connectionStatus =
             document.getElementById("connectionStatus");
