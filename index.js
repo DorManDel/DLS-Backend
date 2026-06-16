@@ -38,12 +38,20 @@ require("dotenv").config();
 const usersRoutes = require("./src/routes/users.routes");
 const usersController = require("./src/controllers/users.controller");
 const questionsRoutes = require("./src/routes/questions.routes");
+// - for SOCKETS setup (MANAGER):
+const socketManager = require("./src/sockets/socket.manager");
 // --- /PATH ---
+
+// - for SOCKETS setup:
+const http = require("http");
+const { Server } = require("socket.io");
 
 // APP CONFIG = create express app and define server port
 // --- CONFIG ---
 const app = express();
 const port = process.env.PORT || 3000;
+/* HTTP SERVER - needed for Socket.IO */
+const httpServer = http.createServer(app);
 // --- /CONFIG ---
 
 // Middleware - runs before routes, prepares REQ for server
@@ -57,6 +65,16 @@ app.use(cors());
 /* Allows the server to read normal HTML form data. */
 app.use(express.urlencoded({ extended: true }));
 // --- /MIDDLEWARE ---
+
+/* SOCKET.IO SERVER -- add realtime communication on top of HTTP Server */
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE"]
+    }
+});
+
+socketManager.setupSocketServer(io);
 
 /* Static files -- This lets Express serve files from /html - server frontend files from folder */
 app.use(express.static(path.join(__dirname, "html")));
@@ -100,8 +118,31 @@ app.use((req, res) => {
     });
 });
 
+/*
+    GLOBAL ERROR HANDLER ⚠️🤚🏻
+    Catch server errors and return JSON instead of HTML.
+
+    Example:
+    If controller has a bug, client gets clean JSON response.
+*/
+
+app.use((err, req, res, next) => {
+    console.error("SERVER ERROR:", err.message);
+
+    res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        data: null
+    });
+});
+
 
 /* LISTEN - `${param}` = PORT_NUMBER -- START SERVER : */
-app.listen(port, () => {
+// for sockets we use `httpServer.listen(...)`;
+httpServer.listen(port, () => {
     console.log(`Server is Running on Port ${port}`);
 });
+
+/* HTTP server wraps Express app
+    Socket.IO attaches to HTTP server
+      HTTP server listens */

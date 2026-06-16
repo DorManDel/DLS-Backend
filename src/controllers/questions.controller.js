@@ -11,6 +11,7 @@ CONTROLLER - HTTP LOGIC
 */
 
 const questionsStore = require("../data/questions.store");
+const socketManager = require("../sockets/socket.manager");
 
 
 /*
@@ -130,6 +131,7 @@ function createQuestion(req, res) {
         isAnonymous
     } = req.body;
 
+
     /*
         Important:
         We check x/y with === undefined because 0 is a valid value.
@@ -165,6 +167,10 @@ function createQuestion(req, res) {
         isAnonymous
     });
 
+    /* SOCKET EVENT = Notify teacher/dashboard/frontend that new question was created. */
+    socketManager.emitQuestionCreated(newQuestion);
+
+    /* HTTP RESPONSE = Return normal REST response to Postman / frontend. */
     res.status(201).json({
         success: true,
         message: "Question created successfully",
