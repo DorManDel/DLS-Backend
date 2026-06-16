@@ -555,6 +555,8 @@ Implemented:
 Next:
 
 * Connect frontend Part A to backend Part B
+* Replace localStorage question flow with REST API
+* Listen to Socket.IO events inside presentation page
 * Replace in-memory store with database
 * Deploy backend to Render
 
