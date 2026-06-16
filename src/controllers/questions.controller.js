@@ -8,6 +8,7 @@ CONTROLLER - HTTP LOGIC
 
 -  knows req/res.
 -  decides HTTP status codes: 200, 201, 400, 404...
+(calls socketManager.emitQuestionUpdated(...))
 */
 
 const questionsStore = require("../data/questions.store");
@@ -194,6 +195,9 @@ function createQuestion(req, res) {
     Status:
     200 OK = question updated
     404 Not Found = question id does not exist
+
+    Order:
+    getID -> updateInStore -> notFound = 404 -> Found?=socketEmit -> return 200
 */
 function updateQuestion(req, res) {
     const questionId = req.params.id;
@@ -208,12 +212,16 @@ function updateQuestion(req, res) {
         });
     }
 
+    /* SOCKET EVENT = Notify frontend that question was updated. */
+    socketManager.emitQuestionUpdated(updatedQuestion);
+
     res.status(200).json({
         success: true,
         message: "Question updated successfully",
         data: updatedQuestion
     });
 }
+
 
 
 /*
@@ -236,6 +244,9 @@ function deleteQuestion(req, res) {
             data: null
         });
     }
+
+    /* SOCKET EVENT = Notify frontend that question was deleted. */
+    socketManager.emitQuestionDeleted(deletedQuestion);
 
     res.status(200).json({
         success: true,
