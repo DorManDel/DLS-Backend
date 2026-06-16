@@ -26,10 +26,12 @@
     <script>
         /*
             SOCKET TEST CLIENT
-            Connect to backend Socket.IO server and listen for events.
+                Connect to backend Socket.IO server and listen for events.
         */
 
         const socket = io();
+
+        const PRESENTATION_ID = "demo-presentation";
 
         const connectionStatus =
             document.getElementById("connectionStatus");
@@ -40,7 +42,7 @@
 
         /*
             CONNECT EVENT
-            Runs when browser connects to Socket.IO server.
+                Runs when browser connects to Socket.IO server.
         */
         socket.on("connect", function () {
             connectionStatus.textContent =
@@ -49,11 +51,27 @@
 
 
         /*
+            JOIN PRESENTATION ROOM
+                This makes the client listen only to this presentation.
+        */
+        socket.emit("presentation:join", {
+            presentationId: PRESENTATION_ID
+        });
+
+        /*
             SERVER WELCOME EVENT
-            Sent from socket.manager.js after connection.
+                Sent from socket.manager.js after connection.
         */
         socket.on("server:welcome", function (data) {
             addEventToPage("server:welcome", data);
+        });
+
+        /*
+            PRESENTATION JOINED EVENT
+                Confirms that this client joined a presentation room.
+        */
+        socket.on("presentation:joined", function (data) {
+            addEventToPage("presentation:joined", data);
         });
 
 

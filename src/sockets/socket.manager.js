@@ -17,6 +17,18 @@ Flow:
 /* SOCKET INSTANCE - saved here after setup */
 let ioInstance = null;
 
+/*
+    CREATE PRESENTATION ROOM NAME
+    Purpose:
+    Build one room name per presentation.
+
+    Ex.:
+        presentationId = "demo-presentation"
+        roomName = "presentation:demo-presentation"
+*/
+function createPresentationRoom(presentationId) {
+    return `presentation:${presentationId}`;
+}
 
 /*
     SETUP SOCKET SERVER
@@ -30,11 +42,42 @@ function setupSocketServer(io) {
     io.on("connection", (socket) => {
         console.log(`Socket connected: ${socket.id}`);
 
+        /* WELCOME EVENT = Sent only to the connected client. */
         socket.emit("server:welcome", {
             message: "Connected to DLS realtime server",
             socketId: socket.id
         });
 
+
+        /*
+            JOIN PRESENTATION ROOM
+                Client tells server which presentation/lecture it listens to.
+
+            Input:  {presentationId: "demo-presentation"}
+        */
+        socket.on("presentation:join", (data) => {
+            if (!data || !data.presentationId) {
+                socket.emit("presentation:error", {
+                    message: "presentationId is required"
+                });
+
+                return;
+            }
+
+            const roomName = createPresentationRoom(data.presentationId);
+
+            socket.join(roomName);
+
+            console.log(`Socket ${socket.id} joined room ${roomName}`);
+
+            socket.emit("presentation:joined", {
+                presentationId: data.presentationId,
+                roomName
+            });
+        });
+
+
+        /* DISCONNECT EVENT = Runs when client disconnects. */
         socket.on("disconnect", () => {
             console.log(`Socket disconnected: ${socket.id}`);
         });
@@ -53,8 +96,15 @@ function emitQuestionCreated(question) {
         console.log("Socket.IO is not ready yet");
         return;
     }
-    console.log(`Socket emit question:created -> ${question.id}`);
+    if (!question || !question.presentationId) {
+        console.log("Cannot emit question:created - missing presentationId");
+        return;
+    }
+
+    const roomName = createPresentationRoom(question.presentationId);
     
+    console.log(`Socket emit question:created -> ${question.id}`);
+
     ioInstance.emit("question:created", question);
 }
 
