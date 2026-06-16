@@ -26,6 +26,11 @@ const questionsStore = require("../data/questions.store");
     Status:
     200 OK = questions loaded successfully
 */
+/*
+POSTMAN : (copy to - )
+- GET - http://localhost:3000/api/questions
+expected to : 200 OK
+*/
 function getQuestions(req, res) {
     const filters = {
         presentationId: req.query.presentationId,
@@ -94,6 +99,23 @@ function getQuestionById(req, res) {
     Status:
     201 Created = question created
     400 Bad Request = missing required data
+*/
+
+/*
+POSTMAN : (copy to - )
+- POST - http://localhost:3000/api/questions
+{
+  "presentationId": "demo-presentation",
+  "fileName": "demo.pdf",
+  "page": 2,
+  "x": 0.42,
+  "y": 0.31,
+  "text": "Can you explain this part?",
+  "color": "#ff2f6d",
+  "studentName": "Anonymous",
+  "isAnonymous": true
+}
+  expected to : 200 OK
 */
 function createQuestion(req, res) {
     const {
