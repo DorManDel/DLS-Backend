@@ -546,10 +546,14 @@ Implemented:
 * Postman API checks
 * Clean route/controller/store split
 * Postman collection export
+* Socket.IO realtime connection
+* Socket.IO presentation rooms
+* Realtime `question:created` event
+* Realtime `question:updated` event
+* Realtime `question:deleted` event
 
 Next:
 
-* Add Socket.IO realtime events
 * Connect frontend Part A to backend Part B
 * Replace in-memory store with database
 * Deploy backend to Render
