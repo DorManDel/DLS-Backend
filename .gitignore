@@ -24,3 +24,6 @@ Thumbs.db
 
 # all PDFs
 *.pdf
+
+# workspace
+Part_B.code-workspace
