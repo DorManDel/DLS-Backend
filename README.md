@@ -645,6 +645,8 @@ For GitHub Issues, branches, Pull Requests, and project-board rules, see:
 
 [GitHub Workflow Cheatsheet 🤼⚒️🔀](docs/GIT_WORKFLOW.md)
 
+[Open DLS GitHub Project Board 🛹📊📚](https://github.com/users/DorManDel/projects/2/views/2)
+
 </details>
 
 ---
