@@ -194,10 +194,9 @@ Backend / Frontend / Database / Socket.IO / Postman / Deployment
 
 ## Suggested Branch
 
-```txt
 feature/issue-number-short-name
 ```
-```
+
 
 ---
 
@@ -603,4 +602,7 @@ Review and merge
 Move issue to Done
 ```
 
-This keeps the project organized, protects the stable branch, and makes collaboration much easier.
+
+```md
+> 🦆 This keeps the project organized, protects the stable branch, and makes collaboration much easier.
+```
