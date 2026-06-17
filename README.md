@@ -20,15 +20,19 @@
   <img src="https://img.shields.io/badge/Status-Prototype-blue" alt="Prototype Status" />
 </p>
 
+
 ---
 
 ## 📌 Overview
 
 This repository contains the backend server for the **Dynamic Lecture System**, also called **DLS**.
 
-<a align="center" href="https://www.figma.com/design/9i2kHP9lS4gbiZunjcRXXg/DLS---Dynamic-Lecture-System?node-id=0-1&p=f&t=apUaMVJGVwu2voGb-0">
+|<a align="center" href="https://www.figma.com/design/9i2kHP9lS4gbiZunjcRXXg/DLS---Dynamic-Lecture-System?node-id=0-1&p=f&t=apUaMVJGVwu2voGb-0">
 <img src="https://img.shields.io/badge/Figma-Design_File-F24E1E?logo=figma&logoColor=white" alt="Figma Design"/>
-</a>
+</a> &nbsp; | &nbsp;
+<a href="https://github.com/users/DorManDel/projects/2/views/2">
+  <img src="https://img.shields.io/badge/GitHub_Project-Board-181717?logo=github&logoColor=white" alt="DLS GitHub Project Board" />
+</a>|
 
 The server provides REST API routes for:
 
