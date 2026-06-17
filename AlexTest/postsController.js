@@ -13,7 +13,7 @@ exports.postsController = {
         const { dbConnection } = require('./dbConnection.js');
         const connection = await dbConnection.createConnection();
 
-        const [rows] = await connection.execute(`SELECT * FROM users`);
+        const [rows] = await connection.execute(`SELECT id, username, role FROM users;`);
         connection.end(); // Always close the connection
         return rows;
     },

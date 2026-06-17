@@ -14,15 +14,17 @@ const usersStore = require("../data/users.store");
     Purpose:
     Return all registered users.
 */
-function getUsers(req, res) {
-    const users = usersStore.getAllUsers();
+exports.postsController = { 
+    
+    async getallusers() {
+        const { dbConnection } = require('./dbConnection.js');
+        const connection = await dbConnection.createConnection();
 
-    res.status(200).json({
-        success: true,
-        message: "Users loaded successfully",
-        count: users.length,
-        data: users
-    });
+        const [rows] = await connection.execute(`SELECT id, username, role FROM users;`);
+        connection.end(); // Always close the connection
+        return rows;
+    },
+
 }
 
 /*
@@ -58,7 +60,7 @@ function createUser(req, res) {
     });
 }
 
-module.exports = {
-    getUsers,
-    createUser
-};
+// module.exports = {
+//     getUsers,
+//     createUser
+// };

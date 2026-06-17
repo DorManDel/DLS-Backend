@@ -99,6 +99,10 @@ app.get("/api/health", (req, res) => {
     });
 });
 
+app.get('/getallusers', async (req, res) => {
+    res.status(200).send(await postsController.getallusers());
+});
+
 /* POST - must release or will be stuck - must send! -- uses the same controller of users */
 app.post("/signup", usersController.createUser);
 
