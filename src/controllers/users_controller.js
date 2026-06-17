@@ -1,4 +1,4 @@
-// src/controllers/users.controller.js
+// src/controllers/users_controller.js
 
 /*
 CONTROLLER :
@@ -7,25 +7,29 @@ CONTROLLER :
 [called to X] -> [checked DATA] -> [got STORE/SERVICE request] -> [returned RESPONSE];
 */
 
-const usersStore = require("../data/users.store");
+//const usersStore = require("../data/users.store.js");
+const { dbConnection } = require('./dbConnection.js');
+
+// exports.users_controller = { 
+
+
 
 /*
     GET /api/users
     Purpose:
     Return all registered users.
 */
-exports.postsController = { 
+
     
-    async getallusers() {
-        const { dbConnection } = require('./dbConnection.js');
+    async function getallusers() {
         const connection = await dbConnection.createConnection();
 
         const [rows] = await connection.execute(`SELECT id, username, role FROM users;`);
         connection.end(); // Always close the connection
         return rows;
-    },
+    }
 
-}
+// }
 
 /*
     POST /api/users
@@ -60,7 +64,7 @@ function createUser(req, res) {
     });
 }
 
-// module.exports = {
-//     getUsers,
-//     createUser
-// };
+module.exports = {
+    getallusers,
+    createUser,
+};

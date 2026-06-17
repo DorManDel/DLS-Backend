@@ -9,6 +9,8 @@ exports.postsController = {
     // },
 
     // GET localhost:8080/posts/2
+
+    
     async getallusers() {
         const { dbConnection } = require('./dbConnection.js');
         const connection = await dbConnection.createConnection();

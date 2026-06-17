@@ -17,7 +17,7 @@ POST /api/users
         ↓
 users.routes.js
         ↓
-users.controller.js
+users_controller.js
         ↓
 users.store.js
         ↓
@@ -36,7 +36,7 @@ require("dotenv").config();
 // REQ INTERNAL FILES = Load owned routes and controllers
 // --- PATH ---
 const usersRoutes = require("./src/routes/users.routes");
-const usersController = require("./src/controllers/users.controller");
+const usersController = require("./src/controllers/users_controller");
 const questionsRoutes = require("./src/routes/questions.routes");
 // - for SOCKETS setup (MANAGER):
 const socketManager = require("./src/sockets/socket.manager");
@@ -100,7 +100,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get('/getallusers', async (req, res) => {
-    res.status(200).send(await postsController.getallusers());
+    res.status(200).send(await usersController.getallusers());
 });
 
 /* POST - must release or will be stuck - must send! -- uses the same controller of users */
