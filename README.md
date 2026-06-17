@@ -601,6 +601,41 @@ Next:
 
 ---
 
+<details open>
+<summary><b>👨🏻‍💻 Dev Installers 📦</b></summary>
+
+## ⚙️ Install Project Requirements
+
+Run this command from the project root folder:
+
+### Windows PowerShell
+
+```powershell
+node -v; npm -v; npm install express cors dotenv socket.io; npm install nodemon --save-dev
+```
+
+### WSL / Linux / Git Bash
+```bash
+node -v && npm -v && npm install express cors dotenv socket.io && npm install nodemon --save-dev
+```
+
+### Run the Server 🏃🏻‍♂️
+```bash
+npm run dev
+```
+
+### Optional: Install Postman 📬
+
+```powershell
+winget install -e --id Postman.Postman --accept-package-agreements --accept-source-agreements
+```
+
+---
+
+</details>
+
+---
+
 <details>
 <summary><b>⚠️ Notes</b></summary>
 

@@ -21,6 +21,8 @@ node_modules/
 .env
 .DS_Store
 Thumbs.db
+testConnection.js
+TDL+Architecture.md
 
 # all PDFs
 *.pdf
