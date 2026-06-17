@@ -567,41 +567,6 @@ Common status codes:
 ---
 
 <details open>
-<summary><b>✅ Current Status</b></summary>
-
-<br>
-
-Implemented:
-
-* Express server
-* Environment variables
-* Static HTML serving
-* Users REST API
-* Questions REST API
-* Question statistics
-* Debug clear route
-* Postman API checks
-* Clean route/controller/store split
-* Postman collection export
-* Socket.IO realtime connection
-* Socket.IO presentation rooms
-* Realtime `question:created` event
-* Realtime `question:updated` event
-* Realtime `question:deleted` event
-
-Next:
-
-* Connect frontend Part A to backend Part B
-* Replace localStorage question flow with REST API
-* Listen to Socket.IO events inside presentation page
-* Replace in-memory store with database
-* Deploy backend to Render
-
-</details>
-
----
-
-<details open>
 <summary><b>👨🏻‍💻 Dev Installers 📦</b></summary>
 
 ## ⚙️ Install Project Requirements
