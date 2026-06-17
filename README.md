@@ -229,6 +229,25 @@ GET /api/health
 
 ---
 
+<details open>
+<summary><b>📡 API Summary</b></summary>
+
+<br>
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/api/health` | Server health check |
+| POST | `/api/users` | Create user |
+| GET | `/api/users` | Get all users |
+| POST | `/api/questions` | Create question |
+| GET | `/api/questions` | Get questions |
+| GET | `/api/questions/stats` | Get question statistics |
+
+
+</details>
+
+---
+
 <details>
 <summary><b>👤 Users API</b></summary>
 
