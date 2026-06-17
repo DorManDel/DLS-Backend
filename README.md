@@ -636,6 +636,19 @@ winget install -e --id Postman.Postman --accept-package-agreements --accept-sour
 
 ---
 
+<details open>
+<summary><b>🤼 Team Workflow 🔀</b></summary>
+
+## 📋 Team Workflow 
+
+For GitHub Issues, branches, Pull Requests, and project-board rules, see:
+
+[GitHub Workflow Cheatsheet 🤼⚒️🔀](docs/GIT_WORKFLOW.md)
+
+</details>
+
+---
+
 <details>
 <summary><b>⚠️ Notes</b></summary>
 
