@@ -26,6 +26,10 @@
 
 This repository contains the backend server for the **Dynamic Lecture System**, also called **DLS**.
 
+<a align="center" href="https://www.figma.com/design/9i2kHP9lS4gbiZunjcRXXg/DLS---Dynamic-Lecture-System?node-id=0-1&p=f&t=apUaMVJGVwu2voGb-0">
+<img src="https://img.shields.io/badge/Figma-Design_File-F24E1E?logo=figma&logoColor=white" alt="Figma Design"/>
+</a>
+
 The server provides REST API routes for:
 
 * Users
@@ -529,6 +533,20 @@ Common status codes:
 
 ---
 
+<details>
+<summary><b>📡 Realtime Events</b></summary>
+
+| Event | Direction | Description |
+| ----- | --------- | ----------- |
+| `presentation:join` | Client -> Server | Join Presentation Room |
+| `question:created` | Server -> Client | New Question was created |
+| `question:updated` | Server -> Client | Question was updated |
+| `question:deleted` | Server -> Client | Question was deleted |
+
+</details>
+
+---
+
 <details open>
 <summary><b>✅ Current Status</b></summary>
 
@@ -569,6 +587,10 @@ Next:
 
 <br>
 
+```md
+> ⚠️ Demo only: passwords are currently stored for testing and must be hashed before production.
+```
+
 This project is still a proof-of-concept backend.
 
 **Do not use real passwords or sensitive information yet.**
@@ -586,3 +608,4 @@ Production version should include:
 * Protected debug/admin routes
 
 </details>
+
