@@ -19,8 +19,6 @@ const { dbConnection } = require('./dbConnection.js');
     Purpose:
     Return all registered users.
 */
-
-    
     async function getallusers() {
         const connection = await dbConnection.createConnection();
 
@@ -29,16 +27,16 @@ const { dbConnection } = require('./dbConnection.js');
         return rows;
     }
 
-// }
+
 
 /*
     POST /api/users
     Purpose:
     Create a new user.
 */
-function createUser(req, res) {
+async function getSignupPost(req, res) {
     const { username, password } = req.body;
-
+    console.log(`getSignupPost called with:, ${username}, ${password}`);
     if (!username || !password) {
         return res.status(400).json({
             success: false,
@@ -46,25 +44,53 @@ function createUser(req, res) {
         });
     }
 
-    const existingUser = usersStore.getUserByUsername(username);
+    const connection = await dbConnection.createConnection();
+    try {
+        // Check if user exists (execute returns [rows])
+        const [existingUsers] = await connection.execute(
+            `SELECT * FROM users WHERE username = ?`, 
+            [username]
+        );
 
-    if (existingUser) {
-        return res.status(409).json({
-            success: false,
-            message: "Username already exists"
+        // If the array has any items, the user exists
+        if (existingUsers.length > 0) {
+            connection.end();
+            console.log(`Signup failed: Username ${username} already exists`); // --- DEBUG LOG ---
+            return res.status(409).json({
+                success: false,
+                message: "Username already exists"
+            });
+        }
+
+        const [newUser] = await connection.execute(
+            `INSERT INTO users (username, password, role) VALUES (?, ?, 'student')`, 
+            [username, password]
+        );
+
+        console.log(`New user created: ${username}`);
+
+        return res.status(201).json({
+            success: true,
+            message: "Account created successfully",
+            data: {
+                username: username,
+                password: password,
+                role: 'student'
+            }
         });
-    }
-
-    const newUser = usersStore.createUser({ username, password });
-
-    res.status(201).json({
-        success: true,
-        message: "Account created successfully",
-        data: newUser
-    });
-}
+    } catch (error) {
+        console.error("Error during signup:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    } finally {
+        connection.end();
+    };
+};
 
 module.exports = {
     getallusers,
-    createUser,
+    // createUser,
+    getSignupPost
 };

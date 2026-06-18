@@ -104,7 +104,7 @@ app.get('/getallusers', async (req, res) => {
 });
 
 /* POST - must release or will be stuck - must send! -- uses the same controller of users */
-app.post("/signup", usersController.createUser);
+app.post('/signup', usersController.getSignupPost);
 
 /* REST API routes */
 app.use("/api/users", usersRoutes);

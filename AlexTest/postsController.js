@@ -20,4 +20,12 @@ exports.postsController = {
         return rows;
     },
 
+    async getSignupPost(username, password) {
+        const { dbConnection } = require('./dbConnection.js');
+        const connection = await dbConnection.createConnection();
+        const [rows] = await connection.execute(`INSERT INTO users (username, password) VALUES (?, ?);`, [username, password]);
+        connection.end();
+        return rows;    
+    }
+
 }
