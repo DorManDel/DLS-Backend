@@ -138,6 +138,7 @@ app.use((err, req, res, next) => {
         message: "Internal server error",
         data: null
     });
+
 });
 
 
@@ -149,4 +150,5 @@ httpServer.listen(port, () => {
 
 /* HTTP server wraps Express app
     Socket.IO attaches to HTTP server
-      HTTP server listens */
+      HTTP server listens 
+*/
