@@ -34,8 +34,8 @@ socketManager.setupSocketServer(io);
 app.use(express.static(path.join(__dirname, "html")));
 
 app.get("/", (req, res) => {
-    // later will be a PDF get ;
-    res.sendFile(path.join(__dirname, "html", "index.html"));
+    
+    res.sendFile(path.join(__dirname, "html", "index.html")); // ---- DEBUG FUNCTION ----
 
 });
 
