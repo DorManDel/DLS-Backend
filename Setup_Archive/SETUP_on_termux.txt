@@ -1,0 +1,71 @@
+pkg update && pkg upgrade
+
+pkg install nodejs
+
+# Verify the installation:
+node -v
+npm -v
+
+mkdir express-app && cd express-app
+npm init -y
+npm install express dotenv
+npm install --save-dev nodemon -g
+npm install mysql2
+
+git config --global init.defaultBranch main
+
+
+
+pkg install openssh
+passwd
+sshd
+whoami
+ifconfig
+
+ssh -p 8022 your_username@your_ip_address
+
+termux-wake-lock
+
+cd ~/
+mkdir DLS
+cd DLS
+git init -b main
+git branch -m main
+
+# if necessary!
+mv ~/storage/downloads/.env ~/DLS/
+ls -a ~/DLS
+
+cd ~/marianadb
+pkg install mariadb
+mariadb-install-db
+
+# run background process
+mariadbd-safe &
+
+# dotenv file for termux
+#DB_HOST=127.0.0.1
+#DB_PORT=3306
+#DB_USER=root  # e.g., u0_a145
+#DB_PASSWORD=                        # Leave this completely blank
+#DB_NAME=users
+
+
+#SQL snippet!
+drop database IF EXISTS users;
+create database users;
+use users;
+
+create table users(
+id int auto_increment ,
+username varchar (20),
+password varchar (64),
+role varchar(30) not null,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+primary key (id)
+);
+
+INSERT INTO users (username, password, role) 
+VALUES ('SHARBEL','123@123','Student');
+
+SELECT * FROM users;

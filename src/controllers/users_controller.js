@@ -36,6 +36,7 @@ const { dbConnection } = require('./dbConnection.js');
     Purpose:
     Create a new user.
 */
+
 function createUser(req, res) {
     const { username, password } = req.body;
 
