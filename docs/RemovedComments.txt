@@ -1,0 +1,111 @@
+/* ---- context: removed from line 1 in index.js ----*/
+// index.js
+
+/*
+    DLS SERVER - MAIN ENTRY POINT
+    This file starts the Express server and connects:
+    - External libraries
+    - Middleware
+    - Static HTML files
+    - API routes
+    - Server listen
+
+    ---
+
+SERVER PIPELINE:
+----------------
+POST /api/users
+        ↓
+users.routes.js
+        ↓
+users_controller.js
+        ↓
+users.store.js
+        ↓
+Response to Postman
+*/
+
+// REQ = Load Packages installed w/ npm 
+// --- REQUIRE ---
+
+/* ---- context: removed from line 3 ----*/
+/* in certain get - send index via path */
+
+/* ---- context: removed from line 7 ----*/
+// --- /REQUIRE ---
+
+// REQ INTERNAL FILES = Load owned routes and controllers
+// --- PATH ---
+
+/* ---- context: removed from line 11 ----*/
+// - for SOCKETS setup (MANAGER):
+// --- /PATH ---
+/* ---- 13 ---- */
+// - for SOCKETS setup:
+/* ---- 16 ---- */
+// APP CONFIG = create express app and define server port
+// --- CONFIG ---
+/* ----- 19 ---- */
+/* HTTP SERVER - needed for Socket.IO */
+
+/* ---- 21 ---- */
+// --- /CONFIG ---
+
+// Middleware - runs before routes, prepares REQ for server
+// --- MIDDLEWARE ---
+/* Allows the server to read JSON body from Postman / frontend fetch. */
+
+/* ---- 24 ---- */
+/* Allows requests from other domains later, for example frontend <-> backend. */
+/* ----  26 ---- */
+/* Allows the server to read normal HTML form data. */
+
+/* ---- 29 ---- */
+/* SOCKET.IO SERVER -- add realtime communication on top of HTTP Server */
+
+/* ---- 38 ---- */
+/* Static files -- This lets Express serve files from /html - server frontend files from folder */
+
+
+/* ---- 40 ---- */
+/* GET  - HomePage (routes) */
+
+/* ---- 47 ---- */
+/* HEALTH CHECK API - Check if server==alive */
+
+/* ---- 61 ---- */
+/* POST - must release or will be stuck - must send! -- uses the same controller of users */
+
+/* ---- 64 ---- */
+/* REST API routes */
+
+/* ---- 68 ---- */
+/* 404 - PAGE NOT FOUND -- if no route match -> return clean error 404 */
+
+
+/* ---- 78 ---- */
+/*
+    GLOBAL ERROR HANDLER ⚠️🤚🏻
+    Catch server errors and return JSON instead of HTML.
+
+    Example:
+    If controller has a bug, client gets clean JSON response.
+*/
+
+
+/* ---- 93 ---- */
+/* LISTEN - `${param}` = PORT_NUMBER -- START SERVER : */
+// for sockets we use `httpServer.listen(...)`;
+
+/* ---- 98 ---- */
+/* HTTP server wraps Express app
+    Socket.IO attaches to HTTP server
+      HTTP server listens 
+*/
+
+
+/* ----  ---- */
+/* ----  ---- */
+/* ----  ---- */
+
+

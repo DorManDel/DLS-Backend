@@ -16,6 +16,12 @@ app.get('/', async (req, res) => {
     res.status(200).send(await postsController.getallusers());
 });
 
+/* need to implement the logic for when the db returned tht the user already exists and return an error message to the client, and also for when the user is successfully created and return a success message to the client */
+app.post('/signup', async (req, res) => {
+    const { username, password } = req.body;
+    const result = await postsController.getSignupPost(username, password);
+    res.status(200).send(await result);
+});
 // app.post('/posts', async (req, res) => { });
 
 // app.put('/posts/:postId', async (req, res) => { });

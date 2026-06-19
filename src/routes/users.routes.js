@@ -8,14 +8,14 @@ Ex. : GET /api/users  -> USERS shlifa
 */
 
 const express = require("express");
-const usersController = require("../controllers/users.controller");
+const usersController = require('../controllers/users_controller');
 
 const router = express.Router();
 
 /* GET /api/users */
-router.get("/", usersController.getUsers);
+router.get('/', usersController.getallusers);
 
-/* POST /api/users */
-router.post("/", usersController.createUser);
+// /* POST /api/users */
+// router.post("/", usersController.createUser);
 
 module.exports = router;
