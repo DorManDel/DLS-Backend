@@ -18,7 +18,7 @@ So inside this file:
 */
 
 const express = require("express");
-const questionsController = require("../controllers/questions.controller");
+const questionsController = require("./questions.controller");
 
 const router = express.Router();
 
