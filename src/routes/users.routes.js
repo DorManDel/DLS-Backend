@@ -8,7 +8,7 @@ Ex. : GET /api/users  -> USERS shlifa
 */
 
 const express = require("express");
-const usersController = require('../controllers/users_controller');
+const usersController = require('.src/controllers/posts');
 
 const router = express.Router();
 
