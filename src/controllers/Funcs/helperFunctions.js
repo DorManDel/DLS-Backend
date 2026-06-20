@@ -4,5 +4,5 @@ module.exports = {
         return !firstName || !lastName || !username || !password || !role || !email
                firstName.trim() === "" || lastName.trim() === "" ||
                username.trim() === "" || password.trim() === "" || role.trim() === "" || !email.includes(`@`); 
-    }
+    },
 };

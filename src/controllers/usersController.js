@@ -1,6 +1,6 @@
 const User = require('../models/User.js');
 const { dbConnection } = require('./dbConnection.js');
-const { func } = require('./Funcs/helperFunctions.js');
+const func  = require('./Funcs/helperFunctions.js');
 
 /*(POST): getSignupPost(username,password) ----NEEDS TO BE REWRITTEN ONCE DB IS UP! 
     -usage: sending CORRECT data to the db 
