@@ -38,7 +38,7 @@ async function getSignupPost(req, res) {
             role: role || 'student' // Fallback to 'student' if no role is provided
         });
         await newUser.save();
-        console.log(`New user created: ${username} , email: ${email} , with role ${role}`);
+        console.log(`New user created: ${username} , email: ${email} , with role ${role}`); // ---- DEBUG LOG ----
         return res.status(201).json({
             succes: true,
             message: "Account Created Succesfully",
