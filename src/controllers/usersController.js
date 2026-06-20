@@ -67,7 +67,7 @@ async function getallusers() {
         const users = await User.find({}, '_id firstName lastName email username password role');
         return users;
     } catch(error) {
-        console.error("Error fetchinng users", error);
+        console.error("Error fetching users", error);
         return [];
     }
 }
