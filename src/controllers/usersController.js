@@ -56,7 +56,6 @@ async function getSignupPost(req, res) {
             message: "Internal server error"
         });
     }
-
 }
 
 /*(GET): getallusers, connects to db ----NEEDS TO BE REWRITTEN ONCE DB IS UP!

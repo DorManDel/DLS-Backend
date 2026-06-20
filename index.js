@@ -7,7 +7,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { dbConnection } = require('./src/controllers/dbConnection')
 const usersRoutes = require("./src/routes/users.routes");
-const postsController = require("./src/controllers/postsController");
+const usersController = require("./src/controllers/usersController");
 const questionsRoutes = require("./src/routes/questions.routes");
 const socketManager = require("./src/sockets/socket.manager");
 
@@ -39,13 +39,13 @@ app.get("/", (req, res) => {
 
 });
 
-app.get("/api/health", postsController.getHealthCheck);
+app.get("/api/health", usersController.getHealthCheck);
 
 app.get('/getallusers', async (req, res) => {
-    res.status(200).send(await postsController.getallusers());
+    res.status(200).send(await usersController.getallusers());
 });
 
-app.post('/signup', postsController.getSignupPost);
+app.post('/signup', usersController.getSignupPost);
 
 app.use("/api/users", usersRoutes);
 
