@@ -1,3 +1,4 @@
+const User = require('../models/User.js');
 const { dbConnection } = require('./dbConnection.js');
 const { func } = require('./Funcs/helperFunctions.js');
 
@@ -8,66 +9,68 @@ const { func } = require('./Funcs/helperFunctions.js');
     -exported:Y @getSignupPost
 */
 async function getSignupPost(req, res) {
-    const { username, password } = req.body;
-    console.log(`getSignupPost called with:, ${username}, ${password}`); // --- DEBUG LOG ---
-    
-    const userInput = func.isregisterFieldEmpty(username, password);
-    if (userInput) { 
+    const { firstName, lastName, email, username, password, role } = req.body;
+    console.log(`getSignupPost called with: ${firstName}, ${lastName},${email}, ${username},${password}, ${role}`); // --- DEBUG LOG ---
+
+    if (func.isregisterFieldEmpty(firstName, lastName, email, username, password, role)) {
         return res.status(400).json({
             success: false,
-            message: "Username and password are required"
+            message: "First name, last name, username, and password are required"
         });
     }
-        
-    const connection = await dbConnection.createConnection();
+
     try {
-        const [existingUsers] = await connection.execute(
-            `SELECT * FROM users WHERE username = ?`, 
-            [username]
-        );
-        if (existingUsers.length > 0) {
-            connection.end();
-            console.log(`Signup failed: Username ${username} already exists`); // --- DEBUG LOG ---
+        const existingUsername = await User.findOne({ username: username });
+        const existingEmail = await User.findOne({ email: email });
+        if (existingUsername || existingEmail) {
+            console.log(`Signup failed: Username ${username} or email ${email} already exists`);
             return res.status(409).json({
                 success: false,
-                message: "Username already exists"
+                message: `${(existingEmail) ? email : username} already exists`
             });
         }
-        const [newUser] = await connection.execute(
-            `INSERT INTO users (username, password, role) VALUES (?, ?, 'student')`, 
-            [username, password]
-        );
-        console.log(`New user created: ${username}`); // --- DEBUG LOG ---
-
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            username,
+            password,
+            role: role || 'student' // Fallback to 'student' if no role is provided
+        });
+        await newUser.save();
+        console.log(`New user created: ${username} , email: ${email} , with role ${role}`);
         return res.status(201).json({
-            success: true,
-            message: "Account created successfully",
+            succes: true,
+            message: "Account Created Succesfully",
             data: {
-                username: username,
-                password: password,
-                role: 'student'
+                firstName: newUser.firstName,
+                lastName: newUser.username,
+                email: newUser.email,
+                role: newUser.role
             }
         });
     } catch (error) {
-        console.error("Error during signup:", error); // --- DEBUG LOG ---
+        console.error("Error during signUp ", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error"
         });
-    } finally {
-        connection.end();
-    };
-};
+    }
+
+}
 
 /*(GET): getallusers, connects to db ----NEEDS TO BE REWRITTEN ONCE DB IS UP!
     debugging 
     called by index.js ('/getallusers')
 */
 async function getallusers() {
-    const connection = await dbConnection.createConnection();
-    const [rows] = await connection.execute(`SELECT id, username, role FROM users;`);
-    connection.end(); 
-    return rows;
+    try {
+        const users = await User.find({}, '_id firstName lastName email username password role');
+        return users;
+    } catch(error) {
+        console.error("Error fetchinng users", error);
+        return [];
+    }
 }
 
 /* getHealthCheck [req, res]
@@ -80,7 +83,7 @@ function getHealthCheck(req, res) {
     const currentPort = process.env.PORT || 3000;
     return res.status(200).json({
         success: true,
-        message: "DLS server is running 🏃🏻‍♂️",
+        message: "DLS server is running",
         data: {
             port: currentPort,
             environment: process.env.NODE_ENV || "development"

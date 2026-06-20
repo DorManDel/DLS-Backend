@@ -5,7 +5,7 @@ const path = require("path"); // ---- DEBUG ----
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
-
+const { dbConnection } = require('./src/controllers/dbConnection')
 const usersRoutes = require("./src/routes/users.routes");
 const postsController = require("./src/controllers/postsController");
 const questionsRoutes = require("./src/routes/questions.routes");
@@ -17,7 +17,7 @@ const httpServer = http.createServer(app);
 
 app.use(express.json());
 
-app.use(cors());    
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,7 +34,7 @@ socketManager.setupSocketServer(io);
 app.use(express.static(path.join(__dirname, "html")));
 
 app.get("/", (req, res) => {
-    
+
     res.sendFile(path.join(__dirname, "html", "index.html")); // ---- DEBUG FUNCTION ----
 
 });
@@ -49,7 +49,7 @@ app.post('/signup', postsController.getSignupPost);
 
 app.use("/api/users", usersRoutes);
 
-app.use("/api/questions", questionsRoutes);  
+app.use("/api/questions", questionsRoutes);
 
 app.use((req, res) => {
     res.status(404).json({
@@ -73,6 +73,18 @@ app.use((err, req, res, next) => {
 
 });
 
-httpServer.listen(port, () => {
-    console.log(`Server is Running on Port ${port}`);
-});
+
+dbConnection.createConnection()
+    .then(() => {
+        // If DB connects successfully
+        httpServer.listen(port, () => { 
+            console.log(`Server is listening on port ${port} and connected to DB successfully`); 
+        });
+    })
+    .catch((err) => {
+        // If DB fails to connect
+        console.error("Warning: Starting server without database connection");
+        httpServer.listen(port, () => { 
+            console.log(`Server is listening on port ${port} (DB Disconnected)`); 
+        });
+    });

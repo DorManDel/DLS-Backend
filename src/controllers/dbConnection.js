@@ -1,14 +1,13 @@
+const mongoose = require('mongoose');
+
 exports.dbConnection = {
     async createConnection() {
-        const mysql = require('mysql2/promise');
-
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE,
-        });
-
-        return connection;
+        try {
+            await mongoose.connect(process.env.MONGO_URI);
+            console.log("Connected to MongoDB Atlas successfully");
+        } catch (error) {
+            console.error("MongoDB connection failed:", error);
+            throw error; // Pass the error back to index.js
+        }
     }
 }
