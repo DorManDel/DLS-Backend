@@ -9,10 +9,10 @@ const func  = require('./Funcs/helperFunctions.js');
     -exported:Y @getSignupPost
 */
 async function getSignupPost(req, res) {
-    const { firstName, lastName, email, username, password, role } = req.body;
-    console.log(`getSignupPost called with: ${firstName}, ${lastName},${email}, ${username},${password}, ${role}`); // --- DEBUG LOG ---
+    const { firstName, lastName, email, password, role } = req.body;
+    console.log(`getSignupPost called with: ${firstName}, ${lastName},${email}, ${password}, ${role}`); // --- DEBUG LOG ---
 
-    if (func.isregisterFieldEmpty(firstName, lastName, email, username, password, role)) {
+    if (func.isregisterFieldEmpty(firstName, lastName, email, password, role)) {
         return res.status(400).json({
             success: false,
             message: "First name, last name, username, and password are required"
@@ -20,31 +20,30 @@ async function getSignupPost(req, res) {
     }
 
     try {
-        const existingUsername = await User.findOne({ username: username });
+        
         const existingEmail = await User.findOne({ email: email });
-        if (existingUsername || existingEmail) {
-            console.log(`Signup failed: Username ${username} or email ${email} already exists`);
+        if (existingEmail) {
+            console.log(` email already exists`);
             return res.status(409).json({
                 success: false,
-                message: `${(existingEmail) ? email : username} already exists`
+                message: `email :  already exists`
             });
         }
         const newUser = new User({
             firstName,
             lastName,
             email,
-            username,
             password,
             role: role || 'student' // Fallback to 'student' if no role is provided
         });
         await newUser.save();
-        console.log(`New user created: ${username} , email: ${email} , with role ${role}`); // ---- DEBUG LOG ----
+        console.log(`New user created ${firstName},${lastName}. email: ${email} , with role ${role}`); // ---- DEBUG LOG ----
         return res.status(201).json({
             succes: true,
             message: "Account Created Succesfully",
             data: {
                 firstName: newUser.firstName,
-                lastName: newUser.username,
+                lastName: newUser.lastName,
                 email: newUser.email,
                 role: newUser.role
             }
