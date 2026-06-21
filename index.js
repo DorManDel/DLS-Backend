@@ -31,12 +31,13 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-app.get('/' , () => {
+app.get('/' , (req,res) => {
     console.log("connection successful");
-    return true;
-})
-
-
+    return res.send.status(200).json({
+        message: "connection Succes",
+        success: true
+    });
+});
 
 app.use("/",usersRoutes);
 
