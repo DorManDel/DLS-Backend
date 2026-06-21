@@ -2,6 +2,11 @@ const User = require('../models/User.js');
 const { dbConnection } = require('./dbConnection.js');
 const func = require('./Funcs/helperFunctions.js');
 
+async function baseConnection(req,res) {
+    console.log(`connection to server is being made req: ${req.method} to url:${req.url}`);
+    return res.status(200);
+}
+
 /*(POST): getSignupPost(username,password) ----NEEDS TO BE REWRITTEN ONCE DB IS UP! 
     -usage: sending CORRECT data to the db 
     -calledFrom: index.js 
@@ -185,5 +190,6 @@ module.exports = {
     getSignupPost,
     getLoginPost,
     removeUser,
-    getHealthCheck
+    getHealthCheck,
+    baseConnection
 };

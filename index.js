@@ -31,12 +31,7 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-/* ---- DEBUG FUNC ---- serve directly static HTML */
-app.use(express.static(path.join(__dirname, "html")));
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "html", "/noZip/html/index.html")); // ---- DEBUG FUNCTION ----
-});
+app.use("/",usersRoutes);
 
 app.get("/api/health", usersController.getHealthCheck);
 
@@ -46,7 +41,7 @@ app.get('/getallusers', async (req, res) => {
 
 app.post('/signup', usersController.getSignupPost);
 
-app.post('/login', usersController.getLoginPost);
+app.use('/login', usersController.getLoginPost);
 
 app.use("/api/users", usersRoutes);
 

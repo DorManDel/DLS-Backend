@@ -13,7 +13,7 @@ const usersController = require('../controllers/usersController');
 const router = express.Router();
 
 /* GET /api/users */
-router.get('/', usersController.getallusers);
+router.get('/', usersController.baseConnection);
 
 // /* POST /api/users */
 // router.post("/", usersController.createUser);
