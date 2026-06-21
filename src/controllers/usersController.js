@@ -75,11 +75,12 @@ async function getallusers() {
 
 async function removeUser(req, res) {
     /*
+    //added by ALEX
     (DELETE): removeUser(userId)
-    -usage: Delete a user from the database
-    -calledFrom: users.routes.js
-    -calling: User.findByIdAndDelete
-    -exported: Y
+        -usage: Delete a user from the database
+        -calledFrom: users.routes.js
+        -calling: User.findByIdAndDelete
+        -exported: Y
 */
     const { userId } = req.params;
 
@@ -120,13 +121,54 @@ async function removeUser(req, res) {
 }
 
 
-/* getHealthCheck [req, res]
- 1. usage: Returns the server health status and environment details.
- 2. calledFrom: index.js (GET /api/health)
- 3. calling: None
- 4. exported: Y
-*/
+async function getLoginPost(req, res) {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Email and password are required"
+        });
+    }
+    
+    try {
+        const user = await User.findOne({ email: email });
+        
+        if (!user || user.password !== password) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+        
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error("Error during login", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
+
+
 function getHealthCheck(req, res) {
+    /* getHealthCheck [req, res]
+        1. usage: Returns the server health status and environment details.
+        2. calledFrom: index.js (GET /api/health)
+        3. calling: None
+        4. exported: Y
+    */
     const currentPort = process.env.PORT || 3000;
     return res.status(200).json({
         success: true,
@@ -141,6 +183,7 @@ function getHealthCheck(req, res) {
 module.exports = {
     getallusers,
     getSignupPost,
+    getLoginPost,
     removeUser,
     getHealthCheck
 };

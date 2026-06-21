@@ -46,6 +46,8 @@ app.get('/getallusers', async (req, res) => {
 
 app.post('/signup', usersController.getSignupPost);
 
+app.post('/login', usersController.getLoginPost);
+
 app.use("/api/users", usersRoutes);
 
 app.use("/api/questions", questionsRoutes);
