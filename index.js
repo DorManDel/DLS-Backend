@@ -31,7 +31,7 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-app.get('/' , (req,res) => {
+app.get('/' , () => {
     console.log("connection successful");
     res.send("hello");
 })
