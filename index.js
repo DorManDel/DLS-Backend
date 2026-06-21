@@ -33,7 +33,7 @@ socketManager.setupSocketServer(io);
 
 app.get('/' , () => {
     console.log("connection successful");
-    res.send("hello");
+    return true;
 })
 
 
