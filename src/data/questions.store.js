@@ -66,6 +66,9 @@ function createQuestion(questionData) {
         color: questionData.color || "#ff2f6d",
 
         studentName: questionData.studentName || "Anonymous",
+        studentId: questionData.studentId || null,
+        studentEmail: questionData.studentEmail || null,
+
         isAnonymous: questionData.isAnonymous !== false,
 
         /* created time in united format -- ex. 2026-06-16T02:19:09.122Z
@@ -126,6 +129,19 @@ function getAllQuestions(filters = {}) {
 
         result = result.filter((question) => {
             return normalizeText(question.text).includes(searchValue);
+        });
+    }
+
+    /* Added students filtering by studentId and studentEmail */
+    if (filters.studentId) {
+        result = result.filter(function (question) {
+            return question.studentId === filters.studentId;
+        });
+    }
+
+    if (filters.studentEmail) {
+        result = result.filter(function (question) {
+            return question.studentEmail === filters.studentEmail;
         });
     }
 

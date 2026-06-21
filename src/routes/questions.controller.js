@@ -38,7 +38,11 @@ function getQuestions(req, res) {
         presentationId: req.query.presentationId,
         page: req.query.page,
         status: req.query.status,
-        search: req.query.search
+        search: req.query.search,
+
+        // added these 2 fields for QUESTION
+        studentId: req.query.studentId,
+        studentEmail: req.query.studentEmail
     };
 
     const questions = questionsStore.getAllQuestions(filters);
@@ -129,6 +133,8 @@ function createQuestion(req, res) {
         text,
         color,
         studentName,
+        studentId,
+        studentEmail,
         isAnonymous
     } = req.body;
 
@@ -165,6 +171,8 @@ function createQuestion(req, res) {
         text,
         color,
         studentName,
+        studentId,
+        studentEmail,
         isAnonymous
     });
 

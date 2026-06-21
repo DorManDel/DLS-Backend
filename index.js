@@ -18,7 +18,7 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 
 app.use(cors());
-
+/* If the client sends form data, please parse it and put it inside req.body */
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -31,7 +31,8 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-app.use(express.static(path.join(__dirname, "html"))); 
+/* ---- DEBUG FUNC ---- serve directly static HTML */
+app.use(express.static(path.join(__dirname, "html")));
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "html", "index.html")); // ---- DEBUG FUNCTION ----
