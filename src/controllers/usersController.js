@@ -39,7 +39,7 @@ async function getSignupPost(req, res) {
         await newUser.save();
         console.log(`New user created ${firstName},${lastName}. email: ${email} , with role ${role}`); // ---- DEBUG LOG ----
         return res.status(201).json({
-            succes: true,
+            success: true,
             message: "Account Created Succesfully",
             data: {
                 firstName: newUser.firstName,
