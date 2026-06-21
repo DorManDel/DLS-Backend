@@ -4,7 +4,7 @@ const func = require('./Funcs/helperFunctions.js');
 
 async function baseConnection(req,res) {
     console.log(`connection to server is being made req: ${req.method} to url:${req.url}`);
-    return res.status(200);
+    return res.status(200).json({ message: "Users API route working" });
 }
 
 /*(POST): getSignupPost(username,password) ----NEEDS TO BE REWRITTEN ONCE DB IS UP! 

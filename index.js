@@ -33,13 +33,13 @@ socketManager.setupSocketServer(io);
 
 app.get('/' , (req,res) => {
     console.log("connection successful");
-    return res.send.status(200).json({
+    return res.status(200).json({
         message: "connection Succes",
         success: true
     });
 });
 
-app.use("/",usersRoutes);
+
 
 app.get("/api/health", usersController.getHealthCheck);
 
@@ -47,9 +47,6 @@ app.get('/getallusers', async (req, res) => {
     res.status(200).send(await usersController.getallusers());
 });
 
-app.post('/signup', usersController.getSignupPost);
-
-app.use('/login', usersController.getLoginPost);
 
 app.use("/api/users", usersRoutes);
 
