@@ -1,6 +1,6 @@
 const User = require('../models/User.js');
 const { dbConnection } = require('./dbConnection.js');
-const func  = require('./Funcs/helperFunctions.js');
+const func = require('./Funcs/helperFunctions.js');
 
 /*(POST): getSignupPost(username,password) ----NEEDS TO BE REWRITTEN ONCE DB IS UP! 
     -usage: sending CORRECT data to the db 
@@ -20,7 +20,7 @@ async function getSignupPost(req, res) {
     }
 
     try {
-        
+
         const existingEmail = await User.findOne({ email: email });
         if (existingEmail) {
             console.log(` email already exists`);
@@ -65,11 +65,60 @@ async function getallusers() {
     try {
         const users = await User.find({}, '_id firstName lastName email username password role');
         return users;
-    } catch(error) {
+    } catch (error) {
         console.error("Error fetching users", error);
         return [];
     }
 }
+
+
+
+async function removeUser(req, res) {
+    /*
+    (DELETE): removeUser(userId)
+    -usage: Delete a user from the database
+    -calledFrom: users.routes.js
+    -calling: User.findByIdAndDelete
+    -exported: Y
+*/
+    const { userId } = req.params;
+
+    if (!userId) {
+        return res.status(400).json({
+            success: false,
+            message: "User ID is required"
+        });
+    }
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        console.log(`User ${deletedUser.email} deleted successfully`);
+        return res.status(200).json({
+            success: true,
+            message: "User deleted successfully",
+            data: {
+                email: deletedUser.email,
+                firstName: deletedUser.firstName,
+                lastName: deletedUser.lastName
+            }
+        });
+    } catch (error) {
+        console.error("Error deleting user", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
+
 
 /* getHealthCheck [req, res]
  1. usage: Returns the server health status and environment details.
@@ -92,5 +141,6 @@ function getHealthCheck(req, res) {
 module.exports = {
     getallusers,
     getSignupPost,
+    removeUser,
     getHealthCheck
 };

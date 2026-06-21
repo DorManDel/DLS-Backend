@@ -18,4 +18,7 @@ router.get('/', usersController.getallusers);
 // /* POST /api/users */
 // router.post("/", usersController.createUser);
 
+/* DELETE /api/users/:userId */
+router.delete('/:userId', usersController.removeUser);
+
 module.exports = router;
