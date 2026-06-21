@@ -35,7 +35,7 @@ socketManager.setupSocketServer(io);
 app.use(express.static(path.join(__dirname, "html")));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "html", "index.html")); // ---- DEBUG FUNCTION ----
+    res.sendFile(path.join(__dirname, "html", "/noZip/html/index.html")); // ---- DEBUG FUNCTION ----
 });
 
 app.get("/api/health", usersController.getHealthCheck);
