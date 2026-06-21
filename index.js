@@ -31,6 +31,13 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
+app.get('/' , (req,res) => {
+    console.log("connection successful");
+    res.send("hello");
+})
+
+
+
 app.use("/",usersRoutes);
 
 app.get("/api/health", usersController.getHealthCheck);
