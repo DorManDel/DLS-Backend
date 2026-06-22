@@ -223,15 +223,16 @@ async function getSessionInfo(req, res) {
  * DELETE /api/sessions/:code
  * Removes a session and its PDF from GridFS.
  * Only the owner (lecturer) can delete.
+ * Note: Ownership is verified by requireOwner middleware before this is called.
  */
 async function deleteSession(req, res) {
-  const { code } = req.params;
-  const session = await Session.findOne({ code }).exec();
+  // req.session is attached by the requireOwner middleware
+  const session = req.session;
   if (!session) {
     return res.status(404).json({ success: false, message: 'Session not found' });
   }
 
-  // In PoC we skip owner verification
+  // Delete the session (pre-deleteOne hook will clean up the GridFS file)
   await session.deleteOne();
 
   return res.status(200).json({ success: true, message: 'Session deleted' });
@@ -284,6 +285,70 @@ async function listParticipants(req, res) {
   });
 }
 
+/**
+ * DELETE /api/sessions/cleanup/orphaned
+ * Finds all PDFs in GridFS that are not referenced by any session and deletes them.
+ * Admin/test endpoint to clean up accidentally uploaded PDFs without sessions.
+ */
+async function cleanupOrphanPdfs(req, res) {
+  try {
+    const db = mongoose.connection.db;
+    const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'sessionPdfs' });
+
+    // Get all files from GridFS
+    const allFiles = await db.collection('sessionPdfs.files').find({}).toArray();
+    if (!allFiles || allFiles.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No PDF files found in GridFS',
+        data: { deletedCount: 0 }
+      });
+    }
+
+    // Get all pdfFileIds referenced by sessions
+    const sessions = await Session.find({}).select('pdfFileId').lean().exec();
+    const referencedFileIds = new Set(sessions.map(s => s.pdfFileId.toString()));
+
+    // Find orphaned files (those not referenced by any session)
+    const orphanedFiles = allFiles.filter(
+      file => !referencedFileIds.has(file._id.toString())
+    );
+
+    if (orphanedFiles.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No orphaned PDFs found',
+        data: { deletedCount: 0 }
+      });
+    }
+
+    // Delete each orphaned file
+    let deletedCount = 0;
+    for (const file of orphanedFiles) {
+      try {
+        await bucket.delete(file._id);
+        deletedCount++;
+        console.log(`Deleted orphaned GridFS file: ${file._id}`);
+      } catch (err) {
+        console.warn(`Failed to delete orphaned file ${file._id}:`, err);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Cleanup complete: ${deletedCount} orphaned PDF(s) deleted`,
+      data: { deletedCount, orphanedFileIds: orphanedFiles.map(f => f._id) }
+    });
+  } catch (err) {
+    console.error('ERROR in cleanupOrphanPdfs:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error during cleanup',
+      data: null
+    });
+  }
+}
+
 module.exports = {
   // middlewares (now just upload)
   upload,
@@ -294,6 +359,7 @@ module.exports = {
   getSessionInfo,
   deleteSession,
   listAllSessions,
-  listParticipants
+  listParticipants,
+  cleanupOrphanPdfs
 };
 

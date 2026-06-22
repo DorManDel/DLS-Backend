@@ -1,18 +1,31 @@
 // src/routes/session.routes.js
-// Remove authentication middleware – PoC accepts IDs in request bodies
-// No requireAuth / requireLecturer needed for this proof‑of‑concept
 
 const express = require('express');
 const sessionCtrl = require('../controllers/sessionController');
+const { requireAuth, requireOwner } = require('../middleware/auth');
 
 const router = express.Router();
+
+/**
+ * DELETE /api/sessions/cleanup/orphaned – cleanup orphaned PDFs (admin endpoint)
+ *   – requires authentication
+ *   – MUST be before /:code routes to avoid wildcard collision
+ */
+router.delete('/cleanup/orphaned', requireAuth, sessionCtrl.cleanupOrphanPdfs);
 
 /**
  * POST   /api/sessions
  *   – multipart/form-data (field "pdf")
  *   – body must include "ownerId" (the lecturer's ObjectId)
+ *   – requires authentication (x-user-id header)
  */
-router.post('/', sessionCtrl.upload.single('pdf'), sessionCtrl.createSession);
+router.post('/', requireAuth, sessionCtrl.upload.single('pdf'), sessionCtrl.createSession);
+
+/**
+ * GET    /api/sessions – list all sessions (metadata only)
+ */
+router.get('/', sessionCtrl.listAllSessions);
+
 /**
  * GET    /api/sessions/:code/pdf – stream the PDF (any user that knows the code may fetch it)
  */
@@ -29,19 +42,15 @@ router.post('/:code/join', sessionCtrl.joinSession);
 router.get('/:code', sessionCtrl.getSessionInfo);
 
 /**
- * DELETE /api/sessions/:code – delete a session (no owner check for PoC)
- */
-router.delete('/:code', sessionCtrl.deleteSession);
-
-/**
- * GET    /api/sessions – list all sessions (metadata only)
- */
-router.get('/', sessionCtrl.listAllSessions);
-
-/**
  * GET    /api/sessions/:code/participants – list participants of a session
  */
 router.get('/:code/participants', sessionCtrl.listParticipants);
+
+/**
+ * DELETE /api/sessions/:code – delete a session
+ *   – requires authentication and must be session owner
+ */
+router.delete('/:code', requireAuth, requireOwner, sessionCtrl.deleteSession);
 
 module.exports = router;
 
