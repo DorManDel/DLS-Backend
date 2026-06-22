@@ -1,0 +1,19 @@
+// tmp/generateToken.js
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const User = require('../backEnd/src/models/User'); // adjust path if you run from repo root
+
+async function gen(email) {
+  await mongoose.connect(process.env.MONGO_URI);
+  const user = await User.findOne({ email });
+  if (!user) { console.error('No such user'); process.exit(1); }
+
+  const payload = { _id: user._id, email: user.email, role: user.role };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '12h' });
+  console.log('JWT:', token);
+  process.exit();
+}
+
+// replace with the email of the user you want a token for
+gen('lecturer@goodMail.com');

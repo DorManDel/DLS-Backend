@@ -10,6 +10,8 @@ const usersRoutes = require("./src/routes/users.routes");
 const usersController = require("./src/controllers/usersController");
 const questionsRoutes = require("./src/routes/questions.routes");
 const socketManager = require("./src/sockets/socket.manager");
+// Import the new session routes
+const sessionRoutes = require("./src/routes/session.routes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -52,6 +54,9 @@ app.get("/api/health", usersController.getHealthCheck);
 app.use("/api/users", usersRoutes);
 
 app.use("/api/questions", questionsRoutes);
+
+// Mount session routes (place before the 404 catch‑all)
+app.use("/api/sessions", sessionRoutes);
 
 app.use((req, res) => {
     res.status(404).json({
