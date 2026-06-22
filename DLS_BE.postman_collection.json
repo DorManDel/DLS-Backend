@@ -338,7 +338,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent",
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent    ",
           "protocol": "https",
           "host": [
             "dls-backend-uelx",
@@ -348,7 +348,7 @@
           "path": [
             "api",
             "sessions",
-            "recent"
+            "recent    "
           ]
         }
       },
@@ -380,6 +380,38 @@
             "api",
             "users",
             "edit"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_recentSessions4User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent?userId=:USERID:&limit=5",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "recent"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": ":USERID:"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
           ]
         }
       },
