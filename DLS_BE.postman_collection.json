@@ -1,0 +1,389 @@
+{
+  "info": {
+    "_postman_id": "17c7042a-d41b-4b33-9944-17532df19970",
+    "name": "DLS_BE",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54604807",
+    "_collection_link": "https://go.postman.co/collection/54604807-17c7042a-d41b-4b33-9944-17532df19970?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "index",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getAllUsers",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_deleteUser",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/:UID",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users",
+            ":UID"
+          ],
+          "variable": [
+            {
+              "key": "UID",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_signup",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstName\": \"Amit\",\n    \"lastName\": \"Lachmann\",\n    \"email\": \"lahmanmit@goodMail.com\",\n    \"password\": \"1234Al\", \n    \"role\": \"student\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/signup",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users",
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_createSession",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a380797762df4a753dda554",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "ownerId",
+              "value": "6a397f402e024d03829ec11e",
+              "type": "text",
+              "uuid": "720bd83e-d103-404d-8fdc-3b2ae6f2845d"
+            },
+            {
+              "key": "pdf",
+              "type": "file",
+              "uuid": "3191858f-f186-4ae4-8fab-4d5bf55ee3fe",
+              "src": "/C:/Users/Alex/Downloads/SRS-DynamicLectureSystem.pdf"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "joinSession Copy",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"6a380797762df4a753dda554\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/DE72B5/join",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "DE72B5",
+            "join"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getSessionMetadata",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionID",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            ":sessionID"
+          ],
+          "variable": [
+            {
+              "key": "sessionID",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getPDF",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/DE72B5/pdf",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "DE72B5",
+            "pdf"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_listAllSessions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_deleteSession",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionsID",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            ":sessionsID"
+          ],
+          "variable": [
+            {
+              "key": "sessionsID",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_recentSessions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "recent"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_editUser",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"_id\": \"6a397a1d3f04c836fcc0bd28\",\r\n    \"firstName\": \"Alex\",\r\n    \"lastName\": \"Lecturer\",\r\n    \"email\": \"lecturer@goodMail.com\",\r\n    \"password\": \"Aa1234\",\r\n    \"role\": \"lecturer\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/edit",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users",
+            "edit"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
