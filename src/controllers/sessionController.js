@@ -286,6 +286,46 @@ async function listParticipants(req, res) {
 }
 
 /**
+ * GET /api/sessions/recent
+ * Returns a limited number of the most recent sessions for a specific user.
+ */
+async function getRecentSessions(req,res) {
+  const { userId, limit = 5 } = req.query; 
+  const max = Math.min(parseInt(limit, 10) || 5, 50); // Default to 5 if limit isn't provided or is invalid, capped at 50
+
+  if(!userId) {
+    return res.status(400).json({
+      success: false, 
+      message: 'userId is required'
+    });
+  }
+
+  try { 
+    const sessions = await Session.find({ owner: userId })
+      .sort({ createdAt: -1 })
+      .limit(max)
+      .select('code createdAt participants')
+      .lean()
+      .exec();
+
+    const payload = sessions.map(session => ({
+      id: session.code,
+      title: `(${session.title || session.code})`,
+      date: session.createdAt
+    }));
+
+    return res.status(200).json({ success:true, data:payload });
+  } catch(err) { 
+    console.error('SERVER ERROR in getRecentSessions:', err)
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error while fetching recent sessions',
+    });
+  };
+}
+
+
+/**
  * DELETE /api/sessions/cleanup/orphaned
  * Finds all PDFs in GridFS that are not referenced by any session and deletes them.
  * Admin/test endpoint to clean up accidentally uploaded PDFs without sessions.
@@ -360,6 +400,7 @@ module.exports = {
   deleteSession,
   listAllSessions,
   listParticipants,
+  getRecentSessions,
   cleanupOrphanPdfs
 };
 
