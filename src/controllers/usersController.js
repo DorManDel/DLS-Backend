@@ -66,17 +66,65 @@ async function getSignupPost(req, res) {
     debugging 
     called by index.js ('/getallusers')
 */
-async function getallusers() {
+async function getallusers(req,res) {
+    
     try {
-        const users = await User.find({}, '_id firstName lastName email username password role');
-        return users;
+        const users = await User.find({}, '_id firstName lastName email password role');
+        return res.status(200).json({
+            success: true,
+            message: "Users fetched successfully",
+            data: users
+        });
     } catch (error) {
         console.error("Error fetching users", error);
         return [];
     }
 }
 
-
+/* (PUT) Edit User called from Users.routes.js, with /api/users/Edit */
+async function editUser(req,res){
+    const { _id, firstName, lastName, email, password, role } = req.body;
+    if (!_id) {
+        return res.status(400).json({
+            success: false,
+            message: "User ID is required to perform an update"
+        });
+    }
+    try {
+        const foundUser = await User.findById(_id);
+        if (foundUser) {
+            if (firstName) foundUser.firstName = firstName;
+            if (lastName) foundUser.lastName = lastName;
+            if (email) foundUser.email = email; 
+            if (password) foundUser.password = password;
+            if (role) foundUser.role = role;
+            await foundUser.save();
+            return res.status(200).json({ 
+                success: true,
+                message: "User updated successfully",
+                data: {
+                    id: foundUser._id,
+                    firstName: foundUser.firstName,
+                    lastName: foundUser.lastName,
+                    email: foundUser.email,
+                    role: foundUser.role 
+                }
+             });
+        } else {
+            return res.status(404).json({ 
+                success: false,
+                message: "User not found in the database"
+            });
+        }
+        
+    }catch (error) {
+        console.error("Error updating user:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
 
 async function removeUser(req, res) {
     /*
@@ -191,5 +239,6 @@ module.exports = {
     getLoginPost,
     removeUser,
     getHealthCheck,
-    baseConnection
+    baseConnection,
+    editUser
 };

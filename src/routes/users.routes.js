@@ -15,18 +15,15 @@ const router = express.Router();
 /* GET /api/users */
 router.get('/', usersController.getallusers);
 
+/* POST /api/users/signup */
 router.post('/signup', usersController.getSignupPost);
 
-router.post("/login", usersController.getLoginPost);
-// /* POST /api/users */
-// router.post("/", usersController.createUser);
+/* POST /api/users/login */
+router.post('/login', usersController.getLoginPost);
+
+router.put('/edit' , usersController.editUser)
 
 /* DELETE /api/users/:userId */
 router.delete('/:userId', usersController.removeUser);
-
-router.get("*/path", (req,res) => {
-      console.log("Incorrect route");
-      return res.status(404).json({message: "incorrect path" , success: false});     
-})
 
 module.exports = router;

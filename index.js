@@ -31,7 +31,7 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-app.get('/' , (req,res) => {
+app.get('/' , async (req,res) => {
     console.log("connection successful");
     return res.status(200).json({
         message: "connection Succes",
@@ -43,9 +43,9 @@ app.get('/' , (req,res) => {
 
 app.get("/api/health", usersController.getHealthCheck);
 
-app.get('/getallusers', async (req, res) => {
-    res.status(200).send(await usersController.getallusers());
-});
+// app.get('/getallusers', async (req, res) => {
+//     res.status(200).send(await usersController.getallusers());
+// });
 
 
 app.use("/api/users", usersRoutes);
