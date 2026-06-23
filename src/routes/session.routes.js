@@ -10,7 +10,7 @@ const router = express.Router();
  * GET    /api/sessions/recent – get most recent sessions for a user
  * IMPORTANT: This must be declared BEFORE /:code so "recent" isn't treated as a code.
  */
-router.get('/recent', sessionCtrl.getRecentSessions)
+router.get('/recent', sessionCtrl.getRecentSessions);
 
 /**
  * DELETE /api/sessions/cleanup/orphaned – cleanup orphaned PDFs (admin endpoint)
@@ -59,4 +59,3 @@ router.get('/:code/participants', sessionCtrl.listParticipants);
 router.delete('/:code', requireAuth, requireOwner, sessionCtrl.deleteSession);
 
 module.exports = router;
-

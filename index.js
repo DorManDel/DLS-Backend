@@ -42,13 +42,7 @@ app.get('/' , async (req,res) => {
 });
 
 
-
 app.get("/api/health", usersController.getHealthCheck);
-
-// app.get('/getallusers', async (req, res) => {
-//     res.status(200).send(await usersController.getallusers());
-// });
-
 
 
 app.use("/api/users", usersRoutes);
