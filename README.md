@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/img/logo/dls-logo.svg" alt="DLS Logo" width="120" />
+  <img src="noZip\docs\img\logo\dls-logo.svg" alt="DLS Logo" width="120" />
 </p>
 
 <h1 align="center">🖊️ DLS Backend — Dynamic Lecture System Server 👨🏻‍🏫</h1>
