@@ -20,7 +20,7 @@ const sessionSchema = new Schema(
     participants: [{ type: String }],
     // placeholder for future layer/annotation data
     // layers: [{ user: Types.ObjectId, data: Schema.Types.Mixed }]
-    title: { type: String, required: false, unique: false }
+    title: { type: String, required: true, unique: false }
   },
   { timestamps: true }
 );
