@@ -19,7 +19,7 @@ const httpServer = http.createServer(app);
 
 app.use(express.json());
 
-pp.use(cors({
+app.use(cors({
     origin: 'https://yuutamw.github.io', // Or '*' for testing
     // MUST explicitly allow for custom auth header
     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'] 
