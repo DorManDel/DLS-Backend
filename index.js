@@ -18,12 +18,22 @@ const port = process.env.PORT || 3000;
 const httpServer = http.createServer(app);
 
 app.use(express.json());
-
 app.use(cors({
-    origin: 'https://yuutamw.github.io', // Or '*' for testing
+    // Allow both GitHub Pages and local development ports
+    origin: [
+        'https://yuutamw.github.io', 
+        'http://127.0.0.1:5500', 
+        'http://localhost:5500',
+        'http://localhost:5501',
+        'http://localhost:5502',
+        'http://localhost:3000' // Add any other local ports you use
+    ],
     // MUST explicitly allow for custom auth header
     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'] 
 }));
+
+/* If the client sends form data, please parse it and put it inside req.body */
+app.use(express.urlencoded({ extended: true }));
 /* If the client sends form data, please parse it and put it inside req.body */
 app.use(express.urlencoded({ extended: true }));
 
