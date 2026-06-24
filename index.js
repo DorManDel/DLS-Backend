@@ -19,7 +19,11 @@ const httpServer = http.createServer(app);
 
 app.use(express.json());
 
-app.use(cors());
+pp.use(cors({
+    origin: 'https://yuutamw.github.io', // Or '*' for testing
+    // MUST explicitly allow for custom auth header
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'] 
+}));
 /* If the client sends form data, please parse it and put it inside req.body */
 app.use(express.urlencoded({ extended: true }));
 
