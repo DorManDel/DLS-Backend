@@ -308,9 +308,15 @@
       "name": "DLS_BE_deleteSession",
       "request": {
         "method": "DELETE",
-        "header": [],
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a397f402e024d03829ec11e",
+            "type": "text"
+          }
+        ],
         "url": {
-          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionsID",
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionID",
           "protocol": "https",
           "host": [
             "dls-backend-uelx",
@@ -320,11 +326,11 @@
           "path": [
             "api",
             "sessions",
-            ":sessionsID"
+            ":sessionID"
           ],
           "variable": [
             {
-              "key": "sessionsID",
+              "key": "sessionID",
               "value": ""
             }
           ]
