@@ -17,29 +17,65 @@ const port = process.env.PORT || 3000;
 const httpServer = http.createServer(app);
 
 app.use(express.json());
+
+// Connect to the database
+//dbConnection();
+
+// const allowedOrigins = [
+//     '*',
+//     'https://yuutamw.github.io',
+//     'http://127.0.0.1:5500',
+//     'http://localhost:5500',
+//     'http://localhost:5501',
+//     'http://localhost:5502',
+//     'http://localhost:3000'
+// ];
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       // `origin` can be undefined for non‑browser (e.g. curl) requests
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);      // allow requests from any origin
+//       } else {
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
+//   })
+// );
+
+// CORS - dont put full path X - put origin: https://yuutamw.github.io
 const allowedOrigins = [
-    '*',
-    'https://yuutamw.github.io',
-    'http://127.0.0.1:5500',
-    'http://localhost:5500',
-    'http://localhost:5501',
-    'http://localhost:5502',
-    'http://localhost:3000'
+    "http://127.0.0.1:5502",
+    "http://localhost:5502",
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "https://yuutamw.github.io",
+    "https://dynamic-lecture-system.netlify.app"
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // `origin` can be undefined for non‑browser (e.g. curl) requests
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);      // allow requests from any origin
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+app.use(cors({
+    origin(origin, callback) {
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS: " + origin));
     },
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
-  })
-);
+
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "x-user-id"
+    ]
+}));
 
 /* If the client sends form data, please parse it and put it inside req.body */
 app.use(express.urlencoded({ extended: true }));
@@ -54,7 +90,7 @@ const io = new Server(httpServer, {
 
 socketManager.setupSocketServer(io);
 
-app.get('/' , async (req,res) => {
+app.get('/', async (req, res) => {
     console.log("connection successful");
     return res.status(200).json({
         message: "connection Succes",
@@ -99,14 +135,14 @@ app.use((err, req, res, next) => {
 dbConnection.createConnection()
     .then(() => {
         // If DB connects successfully
-        httpServer.listen(port, () => { 
-            console.log(`Server is listening on port ${port} and connected to DB successfully`); 
+        httpServer.listen(port, () => {
+            console.log(`Server is listening on port ${port} and connected to DB successfully`);
         });
     })
     .catch((err) => {
         // If DB fails to connect
         console.error("Warning: Starting server without database connection");
-        httpServer.listen(port, () => { 
-            console.log(`Server is listening on port ${port} (DB Disconnected)`); 
+        httpServer.listen(port, () => {
+            console.log(`Server is listening on port ${port} (DB Disconnected)`);
         });
     });
