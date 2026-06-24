@@ -58,4 +58,9 @@ router.get('/:code/participants', sessionCtrl.listParticipants);
  */
 router.delete('/:code', requireAuth, requireOwner, sessionCtrl.deleteSession);
 
+/*
+DELETE /api/sessions/cleanup/participant/:userId – delete all sessions that contain the given participant, DEBUG function!
+ */
+router.delete('/cleanup/participant/:userId', sessionCtrl.deleteSessionsByParticipant);
+
 module.exports = router;

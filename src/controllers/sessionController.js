@@ -40,104 +40,107 @@ const upload = multer({
 async function createSession(req, res) {
   if (isDev) console.log('--- createSession invoked ---');
   try {
-  // Expected body: { ownerId: <User ObjectId>, pdf: <file> }
-  const { ownerId , title } = req.body;
-  const file = req.file;
+    // Expected body: { ownerId: <User ObjectId>, pdf: <file> }
+    const { ownerId, title } = req.body;
+    if (title === 'undefined' || title === 'null' || title === '') {
+      title = null;
+    }
+    const file = req.file;
     if (isDev) console.log('ownerId from body:', ownerId);
-  if (!ownerId || !file || !title) {
+    if (!ownerId || !file || !title) {
       return res.status(400).json({ success: false, message: 'ownerId (lecturer) and title are required' });
-  }
-  // For PoC we relax ObjectId validation – accept any non‑empty string as ownerId
-  if (typeof ownerId !== 'string' || ownerId.trim() === '') {
+    }
+    // For PoC we relax ObjectId validation – accept any non‑empty string as ownerId
+    if (typeof ownerId !== 'string' || ownerId.trim() === '') {
       if (isDev) console.log('ownerId missing or not a string');
       return res.status(400).json({ success: false, message: 'ownerId is required' });
-  }
-  // Ensure a PDF was provided. Multer puts a file in req.file, but for PoC we also accept a base64 string.
-  let pdfBuffer = null;
-  if (req.file) {
-    pdfBuffer = req.file.buffer;
-    if (isDev) console.log('PDF file buffer size (bytes):', pdfBuffer.length);
-  } else if (req.body.pdfBase64) {
-    // Expect a base64‑encoded string without data URI prefix
-    try {
-      pdfBuffer = Buffer.from(req.body.pdfBase64, 'base64');
-      if (isDev) console.log('Decoded PDF from base64, size (bytes):', pdfBuffer.length);
-    } catch (e) {
-      if (isDev) console.log('Failed to decode base64 PDF');
-      return res.status(400).json({ success: false, message: 'Invalid base64 PDF data' });
     }
-  } else {
-    if (isDev) console.log('No PDF provided');
-    return res.status(400).json({ success: false, message: 'PDF file is required' });
-  }
+    // Ensure a PDF was provided. Multer puts a file in req.file, but for PoC we also accept a base64 string.
+    let pdfBuffer = null;
+    if (req.file) {
+      pdfBuffer = req.file.buffer;
+      if (isDev) console.log('PDF file buffer size (bytes):', pdfBuffer.length);
+    } else if (req.body.pdfBase64) {
+      // Expect a base64‑encoded string without data URI prefix
+      try {
+        pdfBuffer = Buffer.from(req.body.pdfBase64, 'base64');
+        if (isDev) console.log('Decoded PDF from base64, size (bytes):', pdfBuffer.length);
+      } catch (e) {
+        if (isDev) console.log('Failed to decode base64 PDF');
+        return res.status(400).json({ success: false, message: 'Invalid base64 PDF data' });
+      }
+    } else {
+      if (isDev) console.log('No PDF provided');
+      return res.status(400).json({ success: false, message: 'PDF file is required' });
+    }
 
-  // 1️⃣ Generate a unique 6‑char code
-  let code;
-  for (let i = 0; i < 5; i++) { // try a few times before giving up
-    const candidate = generateSessionCode();
-    const exists = await Session.findOne({ code: candidate }).lean();
-    if (!exists) {
-      code = candidate;
-      break;
+    // 1️⃣ Generate a unique 6‑char code
+    let code;
+    for (let i = 0; i < 5; i++) { // try a few times before giving up
+      const candidate = generateSessionCode();
+      const exists = await Session.findOne({ code: candidate }).lean();
+      if (!exists) {
+        code = candidate;
+        break;
+      }
     }
-  }
-  if (!code) {
+    if (!code) {
       if (isDev) console.log('Failed to generate unique code');
-    return res.status(500).json({ success: false, message: 'Could not generate unique session code' });
-  }
+      return res.status(500).json({ success: false, message: 'Could not generate unique session code' });
+    }
     if (isDev) console.log('Generated session code:', code);
 
 
-  // 2️⃣ Store PDF in GridFS and capture the file id after the upload finishes
-  const db = mongoose.connection.db;
-  const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'sessionPdfs' });
-  const uploadStream = bucket.openUploadStream(code, {
-    contentType: 'application/pdf',
-    metadata: { lecturerId: ownerId }
-  });
+    // 2️⃣ Store PDF in GridFS and capture the file id after the upload finishes
+    const db = mongoose.connection.db;
+    const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'sessionPdfs' });
+    const uploadStream = bucket.openUploadStream(code, {
+      contentType: 'application/pdf',
+      metadata: { lecturerId: ownerId }
+    });
 
-  // pipe the buffer (from either multer or base64) into the upload stream
-  uploadStream.end(pdfBuffer);
-
-
-
-  // Wait for the stream to finish, then use the generated file id
-  await new Promise((resolve, reject) => {
-    uploadStream.on('error', reject);
+    // pipe the buffer (from either multer or base64) into the upload stream
+    uploadStream.end(pdfBuffer);
 
 
-    uploadStream.on('finish', resolve);
-  });
 
-  const pdfFileId = uploadStream.id; // GridFS generated ObjectId for the file
-  if (isDev) console.log('PDF stored in GridFS with _id:', pdfFileId);
+    // Wait for the stream to finish, then use the generated file id
+    await new Promise((resolve, reject) => {
+      uploadStream.on('error', reject);
 
-  // 3️⃣ Persist the Session document (owner is automatically a participant)
-  const session = new Session({
-    code,
-    owner: ownerId,
 
-    pdfFileId,
-    participants: [ownerId],
-    title: title || `Session:(${code})`
-  });
-  await session.save();
+      uploadStream.on('finish', resolve);
+    });
+
+    const pdfFileId = uploadStream.id; // GridFS generated ObjectId for the file
+    if (isDev) console.log('PDF stored in GridFS with _id:', pdfFileId);
+
+    // 3️⃣ Persist the Session document (owner is automatically a participant)
+    const session = new Session({
+      code,
+      owner: ownerId,
+
+      pdfFileId,
+      participants: [ownerId],
+      title: title || `Session:(${code})`
+    });
+    await session.save();
     if (isDev) console.log('Session saved to DB with _id:', session._id);
 
-  // 4️⃣ Respond with the short code and a URL to fetch the PDF later
-  return res.status(201).json({
-    success: true,
-    message: 'Session created',
-    data: {
-      code: session.code,
-      pdfUrl: `/api/sessions/${session.code}/pdf`,
-      title: session.title
-    }
-  });
+    // 4️⃣ Respond with the short code and a URL to fetch the PDF later
+    return res.status(201).json({
+      success: true,
+      message: 'Session created',
+      data: {
+        code: session.code,
+        pdfUrl: `/api/sessions/${session.code}/pdf`,
+        title: session.title
+      }
+    });
   } catch (err) {
     console.error('SERVER ERROR in createSession:', err);
     return res.status(500).json({ success: false, message: 'Internal server error', data: null });
-}
+  }
 }
 
 /**
@@ -292,19 +295,20 @@ async function listParticipants(req, res) {
  * GET /api/sessions/recent
  * Returns a limited number of the most recent sessions for a specific user.
  */
-async function getRecentSessions(req,res) {
-  const { userId, limit = 5 } = req.query; 
+async function getRecentSessions(req, res) {
+  const { userId, limit = 5 } = req.query;
   const max = Math.min(parseInt(limit, 10) || 5, 50); // Default to 5 if limit isn't provided or is invalid, capped at 50
 
-  if(!userId) {
+  if (!userId) {
     return res.status(400).json({
-      success: false, 
+      success: false,
       message: 'userId is required'
     });
   }
 
-  try { 
-    const sessions = await Session.find( { participants: userId } )
+  try {
+    const cleanUserId = String(userId || '').trim();
+    const sessions = await Session.find({ participants: cleanUserId })
       .sort({ createdAt: -1 })
       .limit(max)
       .select('code title createdAt participants')
@@ -317,8 +321,8 @@ async function getRecentSessions(req,res) {
       date: session.createdAt
     }));
 
-    return res.status(200).json({ success:true, data:payload });
-  } catch(err) { 
+    return res.status(200).json({ success: true, data: payload });
+  } catch (err) {
     console.error('SERVER ERROR in getRecentSessions:', err)
     return res.status(500).json({
       success: false,
@@ -392,6 +396,54 @@ async function cleanupOrphanPdfs(req, res) {
   }
 }
 
+/**
+ * DELETE /api/sessions/cleanup/participant/:userId
+ * Removes all sessions where the given userId is a participant.
+ * MUST use document.deleteOne() to trigger GridFS cleanup hooks.
+ */
+async function deleteSessionsByparticipant(req, res) {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ success: false, message: 'userId is required' });
+  }
+
+  const cleanUserId = String(userId).trim();
+
+
+  try {
+    const sessions = await Session.find({ participants: cleanUserId }).exec();
+    if (sessions.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No sessions found for this participant',
+        data: { deletedCount: 0 }
+      });
+    }
+
+    let deletedCount = 0;
+
+    // Loop and call .deleteOne() on each instance to trigger GridFS cleanup
+    for (const session of sessions) {
+      await session.deleteOne();
+      deletedCount++;
+    }
+    return res.status(200).json({
+      success: true,
+      message: `Successfully deleted ${deletedCount} session(s) for participant ${cleanUserId}`,
+      data: { deletedCount }
+    });
+  } catch (error) {
+    console.error('SERVER ERROR in deleteSessionsByParticipant:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error during deletion',
+      data: null
+    });
+  }
+
+}
+
 module.exports = {
   // middlewares (now just upload)
   upload,
@@ -404,6 +456,7 @@ module.exports = {
   listAllSessions,
   listParticipants,
   getRecentSessions,
-  cleanupOrphanPdfs
+  cleanupOrphanPdfs,
+  deleteSessionsByparticipant
 };
 
