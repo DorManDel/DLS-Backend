@@ -35,7 +35,7 @@ router.get('/', sessionCtrl.listAllSessions);
 /*
 DELETE /api/sessions/cleanup/participant/:userId – delete all sessions that contain the given participant, DEBUG function!
  */
-router.delete('/cleanup/participant/:userId', sessionCtrl.deleteSessionsByParticipant);
+router.delete('/cleanup/participant/:userId', sessionCtrl.deleteSessionsByparticipant);
 
 /**
  * GET    /api/sessions/:code/pdf – stream the PDF (any user that knows the code may fetch it)

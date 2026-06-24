@@ -1,6 +1,7 @@
 const User = require('../models/User.js');
 const { dbConnection } = require('./dbConnection.js');
 const func = require('./Funcs/helperFunctions.js');
+const sessionsController = require('../controllers/sessionController.js')
 
 async function baseConnection(req,res) {
     console.log(`connection to server is being made req: ${req.method} to url:${req.url}`);
@@ -145,6 +146,7 @@ async function removeUser(req, res) {
     }
 
     try {
+        await sessionsController.removeParticipantFromAll(userId);
         const deletedUser = await User.findByIdAndDelete(userId);
 
         if (!deletedUser) {

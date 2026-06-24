@@ -42,12 +42,10 @@ async function createSession(req, res) {
   try {
     // Expected body: { ownerId: <User ObjectId>, pdf: <file> }
     const { ownerId, title } = req.body;
-    if (title === 'undefined' || title === 'null' || title === '') {
-      title = null;
-    }
+      if (isDev) console.log(`--- createSession body:  ---${req.body}`);
     const file = req.file;
     if (isDev) console.log('ownerId from body:', ownerId);
-    if (!ownerId || !file || !title) {
+    if (!ownerId || !file) {
       return res.status(400).json({ success: false, message: 'ownerId (lecturer) and title are required' });
     }
     // For PoC we relax ObjectId validation – accept any non‑empty string as ownerId
@@ -125,7 +123,7 @@ async function createSession(req, res) {
       title: title || `Session:(${code})`
     });
     await session.save();
-    if (isDev) console.log('Session saved to DB with _id:', session._id);
+    if (isDev) console.log('Session saved to DB with _id:', session._id, 'title: ', session.title);
 
     // 4️⃣ Respond with the short code and a URL to fetch the PDF later
     return res.status(201).json({
@@ -219,6 +217,7 @@ async function getSessionInfo(req, res) {
     data: {
       code: session.code,
       ownerId: session.owner,
+      title: session.title,
       createdAt: session.createdAt,
       participantsCount: session.participants.length
     }
@@ -258,8 +257,9 @@ async function listAllSessions(req, res) {
   const payload = sessions.map(s => ({
     code: s.code,
     ownerId: s.owner,
+    title: s.title,
     createdAt: s.createdAt,
-    participantsCount: s.participants.length
+    participantsCount: s.participants.length,
   }));
 
   return res.status(200).json({ success: true, data: payload });
@@ -286,7 +286,8 @@ async function listParticipants(req, res) {
       id: p._id,
       firstName: p.firstName,
       lastName: p.lastName,
-      email: p.email
+      email: p.email,
+      role: p.role
     }))
   });
 }
@@ -316,8 +317,9 @@ async function getRecentSessions(req, res) {
       .exec();
 
     const payload = sessions.map(session => ({
-      id: session.code,
-      title: session.title || `סשן (${session.code})`,
+      code: session.code,
+      ownerId: session.ownerId,
+      title: session.title ,
       date: session.createdAt
     }));
 
@@ -434,7 +436,7 @@ async function deleteSessionsByparticipant(req, res) {
       data: { deletedCount }
     });
   } catch (error) {
-    console.error('SERVER ERROR in deleteSessionsByParticipant:', err);
+    console.error('SERVER ERROR in deleteSessionsByParticipant:', error);
     return res.status(500).json({
       success: false,
       message: 'Internal server error during deletion',
@@ -442,6 +444,28 @@ async function deleteSessionsByparticipant(req, res) {
     });
   }
 
+}
+
+/**
+ * Helper: Removes a specific userId from the participants array of ALL sessions.
+ * Does NOT delete the session itself.
+ */
+async function removeParticipantFromAll(userId) {
+  if (!userId) return;
+  const cleanUserId = String(userId).trim();
+
+  try {
+    // $pull removes the specific value from the array across all matching documents
+    const result = await Session.updateMany(
+      { participants: cleanUserId }, 
+      { $pull: { participants: cleanUserId } }
+    );
+    console.log(`Removed user ${cleanUserId} from ${result.modifiedCount} session(s)`);
+    return result;
+  } catch (error) {
+    console.error('Error removing participant from sessions:', error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -457,6 +481,7 @@ module.exports = {
   listParticipants,
   getRecentSessions,
   cleanupOrphanPdfs,
-  deleteSessionsByparticipant
+  deleteSessionsByparticipant,
+  removeParticipantFromAll
 };
 
