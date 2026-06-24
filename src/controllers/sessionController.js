@@ -42,8 +42,9 @@ async function createSession(req, res) {
   try {
   // Expected body: { ownerId: <User ObjectId>, pdf: <file> }
   const { ownerId , title } = req.body;
+  const file = req.file;
     if (isDev) console.log('ownerId from body:', ownerId);
-  if (!ownerId) {
+  if (!ownerId || !file) {
       return res.status(400).json({ success: false, message: 'ownerId (lecturer) and title are required' });
   }
   // For PoC we relax ObjectId validation – accept any non‑empty string as ownerId
@@ -128,8 +129,9 @@ async function createSession(req, res) {
     success: true,
     message: 'Session created',
     data: {
-      code,
-      pdfUrl: `/api/sessions/${code}/pdf`
+      code: session.code,
+      pdfUrl: `/api/sessions/${session.code}/pdf`,
+      title: session.title
     }
   });
   } catch (err) {
