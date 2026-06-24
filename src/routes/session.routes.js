@@ -32,6 +32,11 @@ router.post('/', requireAuth, sessionCtrl.upload.single('pdf'), sessionCtrl.crea
  */
 router.get('/', sessionCtrl.listAllSessions);
 
+/*
+DELETE /api/sessions/cleanup/participant/:userId – delete all sessions that contain the given participant, DEBUG function!
+ */
+router.delete('/cleanup/participant/:userId', sessionCtrl.deleteSessionsByParticipant);
+
 /**
  * GET    /api/sessions/:code/pdf – stream the PDF (any user that knows the code may fetch it)
  */
@@ -57,10 +62,5 @@ router.get('/:code/participants', sessionCtrl.listParticipants);
  *   – requires authentication and must be session owner
  */
 router.delete('/:code', requireAuth, requireOwner, sessionCtrl.deleteSession);
-
-/*
-DELETE /api/sessions/cleanup/participant/:userId – delete all sessions that contain the given participant, DEBUG function!
- */
-router.delete('/cleanup/participant/:userId', sessionCtrl.deleteSessionsByParticipant);
 
 module.exports = router;
