@@ -313,7 +313,7 @@ async function getRecentSessions(req,res) {
 
     const payload = sessions.map(session => ({
       id: session.code,
-      title: `(${session.title })`,
+      title: session.title || `סשן (${session.code})`,
       date: session.createdAt
     }));
 
