@@ -246,7 +246,7 @@ async function deleteSession(req, res) {
  */
 async function listAllSessions(req, res) {
   const sessions = await Session.find({})
-    .select('code owner createdAt participants')
+    .select('code title owner createdAt participants')
     .lean()
     .exec();
 
