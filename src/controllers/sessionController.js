@@ -305,13 +305,13 @@ async function getRecentSessions(req,res) {
     const sessions = await Session.find( { participants: userId } )
       .sort({ createdAt: -1 })
       .limit(max)
-      .select('code createdAt participants')
+      .select('code createdAt title participants')
       .lean()
       .exec();
 
     const payload = sessions.map(session => ({
       id: session.code,
-      title: `(${session.title || session.code})`,
+      title: `(${session.title })`,
       date: session.createdAt
     }));
 
