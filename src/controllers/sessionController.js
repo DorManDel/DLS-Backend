@@ -305,7 +305,7 @@ async function getRecentSessions(req,res) {
     const sessions = await Session.find( { participants: userId } )
       .sort({ createdAt: -1 })
       .limit(max)
-      .select('code createdAt title participants')
+      .select('code title createdAt participants')
       .lean()
       .exec();
 
