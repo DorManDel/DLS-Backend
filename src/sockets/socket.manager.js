@@ -56,7 +56,7 @@ function setupSocketServer(io) {
             Input:  {presentationId: "demo-presentation"}
         */
         socket.on("sessionId:join", (data) => {
-            if (!data || !data.presentationId) {
+            if (!data || !data.sessionId) {
                 socket.emit("sessionId:error", {
                     message: "sessionId is required"
                 });
@@ -64,14 +64,14 @@ function setupSocketServer(io) {
                 return;
             }
 
-            const roomName = createPresentationRoom(data.presentationId);
+            const roomName = createPresentationRoom(data.sessionId);
 
             socket.join(roomName);
 
             console.log(`Socket ${socket.id} joined room ${roomName}`);
 
-            socket.emit("presentation:joined", {
-                presentationId: data.presentationId,
+            socket.emit("userId:joined", {
+                sessionId: data.presentationId,
                 roomName
             });
         });
