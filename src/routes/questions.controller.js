@@ -45,29 +45,6 @@ function getQuestionById(req, res) {
 
 
 
-function updateQuestion(req, res) {
-    const questionId = req.params.id;
-
-    const updatedQuestion = questionsStore.updateQuestion(questionId, req.body);
-
-    if (!updatedQuestion) {
-        return res.status(404).json({
-            success: false,
-            message: "Question not found",
-            data: null
-        });
-    }
-
-    /* SOCKET EVENT = Notify frontend that question was updated. */
-    socketManager.emitQuestionUpdated(updatedQuestion);
-
-    res.status(200).json({
-        success: true,
-        message: "Question updated successfully",
-        data: updatedQuestion
-    });
-}
-
 
 
 /*
