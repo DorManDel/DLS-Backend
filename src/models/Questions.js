@@ -35,13 +35,8 @@ const questionSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ["open", "answered"],
+        enum: ["open", "close"],
         default: "open"
-    },
-
-    color: {
-        type: String,
-        default: "#ff2f6d"
     },
 
     studentId: {
@@ -49,18 +44,6 @@ const questionSchema = new mongoose.Schema({
         index: true,
         default: null
     },
-
-    studentEmail: {
-        type: String,
-        index: true,
-        default: null
-    },
-
-    studentName: {
-        type: String,
-        default: "Anonymous"
-    },
-
     isAnonymous: {
         type: Boolean,
         default: true

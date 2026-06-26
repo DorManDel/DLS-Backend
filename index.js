@@ -47,6 +47,7 @@ app.use(express.json());
 
 // CORS - dont put full path X - put origin: https://yuutamw.github.io
 const allowedOrigins = [
+    "http://localhost:5501",
     "http://127.0.0.1:5502",
     "http://localhost:5502",
     "http://127.0.0.1:5500",
@@ -83,7 +84,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const io = new Server(httpServer, {
     cors: {
-        origin: "*",
+        origin: allowedOrigins,
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
@@ -131,7 +132,10 @@ app.use((err, req, res, next) => {
 
 });
 
-
+/*
+    Start the database first, 
+        Start the server and listen for requests, print to console db connection status
+*/
 dbConnection.createConnection()
     .then(() => {
         // If DB connects successfully
@@ -143,6 +147,6 @@ dbConnection.createConnection()
         // If DB fails to connect
         console.error("Warning: Starting server without database connection");
         httpServer.listen(port, () => {
-            console.log(`Server is listening on port ${port} (DB Disconnected)`);
+            console.log(`Server is listening on port ${port} (DB Disconnected) error: ${err.message}`);
         });
     });

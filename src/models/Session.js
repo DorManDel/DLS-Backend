@@ -16,7 +16,7 @@ const sessionSchema = new Schema(
     // For PoC we accept a simple string identifier for the lecturer (owner)
     owner: { type: String, required: true },
     pdfFileId: { type: Types.ObjectId, required: true },
-    // Participants are stored as strings (user ids) – can be ObjectId strings later
+    
     participants: [{ type: String }],
     // placeholder for future layer/annotation data
     // layers: [{ user: Types.ObjectId, data: Schema.Types.Mixed }]
