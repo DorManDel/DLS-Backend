@@ -32,8 +32,6 @@ function getQuestionById(req, res) {
 
 
 
-  
-
     /* HTTP RESPONSE = Return normal REST response to Postman / frontend. */
     res.status(201).json({
         success: true,
