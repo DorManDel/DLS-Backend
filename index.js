@@ -18,34 +18,6 @@ const httpServer = http.createServer(app);
 
 app.use(express.json());
 
-// Connect to the database
-//dbConnection();
-
-// const allowedOrigins = [
-//     '*',
-//     'https://yuutamw.github.io',
-//     'http://127.0.0.1:5500',
-//     'http://localhost:5500',
-//     'http://localhost:5501',
-//     'http://localhost:5502',
-//     'http://localhost:3000'
-// ];
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       // `origin` can be undefined for non‑browser (e.g. curl) requests
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);      // allow requests from any origin
-//       } else {
-//         callback(new Error('Not allowed by CORS'));
-//       }
-//     },
-//     allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
-//   })
-// );
-
-// CORS - dont put full path X - put origin: https://yuutamw.github.io
 const allowedOrigins = [
     "http://localhost:5501",
     "http://127.0.0.1:5502",

@@ -1,46 +1,42 @@
 const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
-    presentationId: {
-        type: String,
+    
+    sessionId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Session", 
         required: true,
-        index: true
     },
-
     fileName: {
         type: String,
         default: null
     },
-
     page: {
         type: Number,
         required: true
     },
-
     x: {
         type: Number,
         required: true
     },
-
     y: {
         type: Number,
         required: true
     },
-
     text: {
         type: String,
         required: true,
         trim: true
     },
-
     status: {
         type: String,
         enum: ["open", "close"],
-        default: "open"
+        default: "open",
+        required: false
     },
-
     studentId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         index: true,
         default: null
     },
