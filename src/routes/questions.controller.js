@@ -1,8 +1,5 @@
-
-const questionsStore = require("../data/questions.store");
+const Question = require("../models/Questions"); // Use your actual Mongoose model
 const socketManager = require("../sockets/socket.manager");
-
-
 
 
 /*
@@ -31,7 +28,7 @@ function getQuestionById(req, res) {
         message: "Question loaded successfully",
         data: question
     });
-}
+
 
 
 
