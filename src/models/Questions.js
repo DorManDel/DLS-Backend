@@ -44,10 +44,6 @@ const questionSchema = new mongoose.Schema({
         index: true,
         default: null
     },
-    isAnonymous: {
-        type: Boolean,
-        default: true
-    }
 }, {
     timestamps: true
 });

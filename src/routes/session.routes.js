@@ -1,10 +1,14 @@
 // src/routes/session.routes.js
 
 const express = require('express');
-const sessionCtrl = require('../controllers/sessionController');
-const { requireAuth, requireOwner } = require('../middleware/auth');
+const sessionCtrl = require('../controllers/sessionController.js');
+const { requireAuth, requireOwner } = require('../middleware/auth.js');
 
 const router = express.Router();
+/**
+ * GET    /api/sessions – list all sessions (metadata only)
+ */
+router.get('/', sessionCtrl.listAllSessions);
 
 /*
  * GET    /api/sessions/recent – get most recent sessions for a user
@@ -27,10 +31,6 @@ router.delete('/cleanup/orphaned', requireAuth, sessionCtrl.cleanupOrphanPdfs);
  */
 router.post('/', requireAuth, sessionCtrl.upload.single('pdf'), sessionCtrl.createSession);
 
-/**
- * GET    /api/sessions – list all sessions (metadata only)
- */
-router.get('/', sessionCtrl.listAllSessions);
 
 /*
 DELETE /api/sessions/cleanup/participant/:userId – delete all sessions that contain the given participant, DEBUG function!

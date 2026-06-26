@@ -161,6 +161,44 @@ async function streamPdf(req, res) {
 }
 
 /**
+ * POST /api/sessions/:code/join
+ * Adds the logged‑in student to the participants array (idempotent).
+ */
+async function joinSession(req, res) {
+  const { code } = req.params;
+  const { userId } = req.body; // student or any user joining
+  if (!userId) {
+    return res.status(400).json({ success: false, message: 'userId is required to join' });
+  }
+  // Prevent a lecturer from "joining" as a participant (they are already owner)
+  const session = await Session.findOne({ code }).exec();
+  if (!session) {
+    return res.status(404).json({ success: false, message: 'Invalid session code' });
+  }
+
+  // If the requester is the owner, we simply return success – they are already a participant.
+  if (session.owner.toString() === userId.toString()) {
+    return res.status(200).json({
+      success: true,
+      message: 'Owner accessed session',
+      data: { code, pdfUrl: `/api/sessions/${code}/pdf` }
+    });
+  }
+
+  // Use $addToSet to avoid duplicates.
+  await Session.updateOne({ code }, { $addToSet: { participants: userId } }).exec();
+
+  // Placeholder for real‑time notification (later you can emit via socket.io)
+  // if (global.io) { global.io.to(code).emit('participant:joined', { userId }); }
+
+  return res.status(200).json({
+    success: true,
+    message: 'Joined session',
+    data: { code, pdfUrl: `/api/sessions/${code}/pdf` }
+  });
+}
+
+/**
  * GET /api/sessions/:code
  * Returns session metadata (no PDF, no questions).
  */
@@ -431,12 +469,11 @@ async function removeParticipantFromAll(userId) {
 }
 
 module.exports = {
-  // middlewares (now just upload)
   upload,
   // controller functions
   createSession,
   streamPdf,
-
+  joinSession,
   getSessionInfo,
   deleteSession,
   listAllSessions,
