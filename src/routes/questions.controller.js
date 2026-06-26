@@ -32,8 +32,7 @@ function getQuestionById(req, res) {
 
 
 
-    /* SOCKET EVENT = Notify teacher/dashboard/frontend that new question was created. */
-    socketManager.emitQuestionCreated(newQuestion);
+  
 
     /* HTTP RESPONSE = Return normal REST response to Postman / frontend. */
     res.status(201).json({
@@ -66,10 +65,6 @@ function deleteQuestion(req, res) {
             data: null
         });
     }
-
-    /* SOCKET EVENT = Notify frontend that question was deleted. */
-    socketManager.emitQuestionDeleted(deletedQuestion);
-
     res.status(200).json({
         success: true,
         message: "Question deleted successfully",
@@ -82,16 +77,6 @@ function deleteQuestion(req, res) {
     GET /api/questions/stats
     Return question statistics.
 
-    Used for:
-    - Dashboard
-    - Summary
-    - Heatmap
-    - Hottest page
-
-    Optional filter:
-    /api/questions/stats?presentationId=demo
-    Status:
-    200 OK = stats loaded
 */
 function getQuestionsStats(req, res) {
     const filters = {
@@ -131,16 +116,8 @@ function clearQuestionsForDebug(req, res) {
 }
 
 
-/*
-    EXPORTS
-    Allow routes file to use these controller functions.
-*/
-
 module.exports = {
-    getQuestions,
     getQuestionById,
-    createQuestion,
-    updateQuestion,
     deleteQuestion,
     getQuestionsStats,
     clearQuestionsForDebug

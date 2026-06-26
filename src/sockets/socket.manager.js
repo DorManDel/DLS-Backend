@@ -55,10 +55,10 @@ function setupSocketServer(io) {
 
             Input:  {presentationId: "demo-presentation"}
         */
-        socket.on("presentation:join", (data) => {
+        socket.on("sessionId:join", (data) => {
             if (!data || !data.presentationId) {
-                socket.emit("presentation:error", {
-                    message: "presentationId is required"
+                socket.emit("sessionId:error", {
+                    message: "sessionId is required"
                 });
 
                 return;
@@ -84,15 +84,7 @@ function setupSocketServer(io) {
     });
 }
 
-
-
-
-
-
-
-
 module.exports = {
     setupSocketServer,
-    
 };
 

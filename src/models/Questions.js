@@ -2,11 +2,7 @@ const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
     
-    sessionId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Session", 
-        required: true,
-    },
+    code: { type: String, required: true, unique: true },
     fileName: {
         type: String,
         default: null
