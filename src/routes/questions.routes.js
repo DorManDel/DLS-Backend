@@ -37,4 +37,4 @@ router.post("/", questionsController.createQuestion);
 */
 router.delete("/:id", questionsController.deleteQuestion);
 
-module.export = router;
+module.exports = router;
