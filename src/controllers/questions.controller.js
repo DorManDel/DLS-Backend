@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // src/routes/questions.controller.js
 
 /*
@@ -254,15 +255,24 @@ async function updateQuestion(req, res) {
         });
     }
 }
+=======
+const Question = require("../models/Questions"); 
+const socketManager = require("/sockets/socket.manager");
+
+>>>>>>> e3b2d2af28ad1e49b95b50f38cfc8b6adee45d1e
 
 /*
     DELETE /api/questions/:id
     Delete one question by id.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3b2d2af28ad1e49b95b50f38cfc8b6adee45d1e
     Status:
     200 OK = question deleted
     404 Not Found = question id does not exist
 */
+<<<<<<< HEAD
 async function deleteQuestion(req, res) {
     try {
         const questionId = req.params.id;
@@ -358,11 +368,54 @@ async function getQuestionsStats(req, res) {
     }
 }
 
+=======
+function deleteQuestion(req, res) {
+    const questionId = req.body
+
+    const deletedQuestion = questionsStore.deleteQuestion(questionId);
+
+    if (!deletedQuestion) {
+        return res.status(404).json({
+            success: false,
+            message: "Question not found",
+            data: null
+        });
+    }
+    res.status(200).json({
+        success: true,
+        message: "Question deleted successfully",
+        data: deletedQuestion
+    });
+}
+
+
+/*
+    GET /api/questions/stats
+    Return question statistics.
+
+*/
+function getQuestionsStats(req, res) {
+    const filters = {
+        presentationId: req.query.presentationId
+    };
+
+    const stats = questionsStore.getQuestionsStats(filters);
+
+    res.status(200).json({
+        success: true,
+        message: "Question statistics loaded successfully",
+        data: stats
+    });
+}
+
+
+>>>>>>> e3b2d2af28ad1e49b95b50f38cfc8b6adee45d1e
 /*
     DELETE /api/questions/debug/clear
     Debug helper for Postman testing.
 
     Important:
+<<<<<<< HEAD
     - Clears ALL questions in the database for ALL sessions.
     - Only for development.
     - Later remove it or protect it with admin permission.
@@ -404,3 +457,27 @@ module.exports = {
     getQuestionsStats,
     clearQuestionsForDebug
 };
+=======
+    - Clears all questions from memory.
+    - Only for development.
+    - Later remove it or protect it with admin permission.
+
+    Status:
+    200 OK = all questions cleared
+*/
+function clearQuestionsForDebug(req, res) {
+    const result = questionsStore.clearAllQuestions();
+
+    res.status(200).json({
+        success: true,
+        message: "All questions cleared successfully",
+        data: result
+    });
+}
+
+module.exports = {
+    deleteQuestion,
+    getQuestionsStats,
+    clearQuestionsForDebug
+};
+>>>>>>> e3b2d2af28ad1e49b95b50f38cfc8b6adee45d1e
