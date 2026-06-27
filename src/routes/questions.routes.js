@@ -16,7 +16,13 @@ router.get("/stats", questionsController.getQuestionsStats);
     Clear all questions from memory for testing.
     Development only.
 */
+
 router.delete("/debug/clear", questionsController.clearQuestionsForDebug);
+/*
+    GET /api/questions
+    Load questions by code / sessionId / page / status.
+*/ // added for summary
+router.get("/", questionsController.getQuestions);
 
 /*
     POST /api/questions    

@@ -177,15 +177,6 @@ async function createQuestion(req, res) {
             studentId: studentId || null
         });
 
-        /* SOCKET EVENT = Notify everyone in this session's room. */
-        socketManager.emitQuestionCreated(newQuestion);
-
-        return res.status(201).json({
-            success: true,
-            message: "Question created successfully",
-            data: newQuestion
-        });
-
         // DEBUG PRINT____
         console.log("[Q][POST] incoming body:", req.body);
 
@@ -213,6 +204,15 @@ async function createQuestion(req, res) {
         [Q][DB] saved question
         [Q][SOCKET] emitting question:created
         */
+
+        /* SOCKET EVENT = Notify everyone in this session's room. */
+        socketManager.emitQuestionCreated(newQuestion);
+
+        return res.status(201).json({
+            success: true,
+            message: "Question created successfully",
+            data: newQuestion
+        });
     } catch (error) {
         console.error("Error creating question:", error);
         return res.status(500).json({

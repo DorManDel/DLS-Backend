@@ -73,6 +73,11 @@ function setupSocketServer(io) {
             const roomName = createPresentationRoom(data.sessionId);
 
             socket.join(roomName);
+            // added debug to see num of users:
+            const roomSize =
+                ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
+
+            console.log(`[SOCKET][JOIN] ${socket.id} joined ${roomName}. roomSize=${roomSize}`);
 
             console.log(`Socket ${socket.id} joined room ${roomName}`);
 
@@ -114,7 +119,12 @@ function emitToPresentationRoom(eventName, question, payload) {
         return;
     }
 
-    const roomName = createPresentationRoom(question.code);
+    //const roomName = createPresentationRoom(question.code);
+    // switched to advanced debug for test.
+    const roomSize =
+        ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
+
+    console.log(`[SOCKET][EMIT] ${eventName} -> ${question._id} -> ${roomName}. roomSize=${roomSize}`);
 
     console.log(`Socket emit ${eventName} -> ${question._id} -> ${roomName}`);
 
