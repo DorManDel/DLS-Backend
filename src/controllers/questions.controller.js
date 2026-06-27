@@ -185,6 +185,34 @@ async function createQuestion(req, res) {
             message: "Question created successfully",
             data: newQuestion
         });
+
+        // DEBUG PRINT____
+        console.log("[Q][POST] incoming body:", req.body);
+
+        const createdQuestion = await Question.create(questionPayload);
+
+        console.log("[Q][DB] saved question:", {
+            id: createdQuestion._id,
+            code: createdQuestion.code,
+            page: createdQuestion.page,
+            text: createdQuestion.text,
+            studentId: createdQuestion.studentId
+        });
+
+        if (socketManager && typeof socketManager.emitQuestionCreated === "function") {
+            console.log("[Q][SOCKET] emitting question:created:", {
+                id: createdQuestion._id,
+                room: `presentation:${createdQuestion.code}`
+            });
+
+            socketManager.emitQuestionCreated(createdQuestion);
+        }
+        //____
+        /*
+        [Q][POST] incoming body
+        [Q][DB] saved question
+        [Q][SOCKET] emitting question:created
+        */
     } catch (error) {
         console.error("Error creating question:", error);
         return res.status(500).json({
