@@ -204,6 +204,7 @@ function emitSessionParticipantsUpdated(sessionCode, payload) {
     ioInstance.to(roomName).emit("session:participantsUpdated", payload);
 }
 
+// ADDDED for TErminate session 4 All :
 function emitSessionEnded(sessionCode, payload = {}) {
     if (!ioInstance) {
         console.log("Socket.IO is not ready yet");
