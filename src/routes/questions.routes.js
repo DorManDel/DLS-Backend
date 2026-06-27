@@ -3,6 +3,7 @@
 
 const express = require("express");
 const questionsController = require("../controllers/questions.controller");
+const { create } = require("../models/User");
 
 const router = express.Router();
 
@@ -22,31 +23,12 @@ router.get("/stats", questionsController.getQuestionsStats);
 router.delete("/debug/clear", questionsController.clearQuestionsForDebug);
 
 
-/*
-    GET /api/questions   
-    Get all questions.
-    Supports query filters:
-    ?presentationId=
-    ?page=
-    ?status=
-    ?search=
-*/
-router.get("/", questionsController.getQuestions);
-
 
 /*
     POST /api/questions    
     Create a new question.
 */
 router.post("/", questionsController.createQuestion);
-
-
-/*
-    GET /api/questions/:id   
-    Get one question by id.
-*/
-router.get("/:id", questionsController.getQuestionById);
-
 
 
 /*
@@ -58,7 +40,6 @@ router.delete("/:id", questionsController.deleteQuestion);
 
 module.exports = {
     getQuestionById,
+    createQuestion,
     deleteQuestion,
-    // getQuestionsStats,
-    
 };

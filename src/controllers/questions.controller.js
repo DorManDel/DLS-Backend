@@ -72,7 +72,6 @@ function clearQuestionsForDebug(req, res) {
 }
 
 module.exports = {
-    createQuestion: debugCreateQuestion,
     deleteQuestion,
     getQuestionsStats,
     clearQuestionsForDebug
