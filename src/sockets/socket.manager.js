@@ -1,3 +1,4 @@
+
 // src/sockets/socket.manager.js
 
 /*
@@ -7,9 +8,9 @@ SOCKET MANAGER :
 - lets controllers emit realtime events later
 
 Flow:
-1) Client connects  
-2) Socket server catches connection        
-3) Server can emit events        
+1) Client connects
+2) Socket server catches connection
+3) Server can emit events
 4) Frontend updates without refresh
 */
 
@@ -18,16 +19,16 @@ Flow:
 let ioInstance = null;
 
 /*
-    CREATE PRESENTATION ROOM NAME
+    CREATE SESSION ROOM NAME
     Purpose:
-    Build one room name per presentation.
+    Build one room name per live session.
 
     Ex.:
-        presentationId = "demo-presentation"
-        roomName = "presentation:demo-presentation"
+        sessionId = "D71DDE"
+        roomName  = "presentation:D71DDE"
 */
-function createPresentationRoom(presentationId) {
-    return `presentation:${presentationId}`;
+function createPresentationRoom(sessionId) {
+    return `presentation:${sessionId}`;
 }
 
 /*
@@ -50,14 +51,19 @@ function setupSocketServer(io) {
 
 
         /*
-            JOIN PRESENTATION ROOM
-                Client tells server which presentation/lecture it listens to.
+            JOIN SESSION ROOM
+                Client tells server which live session it listens to.
 
-            Input:  {presentationId: "demo-presentation"}
+            Input:  { sessionId: "D71DDE" }
+
+            IMPORTANT:
+            This event name must match what the frontend emits.
+            See js/Api-dls.js -> DLS_SOCKET.joinPresentation():
+                socket.emit("presentation:join", { sessionId });
         */
-        socket.on("sessionId:join", (data) => {
+        socket.on("session:join", (data) => {
             if (!data || !data.sessionId) {
-                socket.emit("sessionId:error", {
+                socket.emit("presentation:error", {
                     message: "sessionId is required"
                 });
 
@@ -70,8 +76,8 @@ function setupSocketServer(io) {
 
             console.log(`Socket ${socket.id} joined room ${roomName}`);
 
-            socket.emit("userId:joined", {
-                sessionId: data.presentationId,
+            socket.emit("presentation:joined", {
+                sessionId: data.sessionId,
                 roomName
             });
         });
@@ -84,7 +90,122 @@ function setupSocketServer(io) {
     });
 }
 
+
+/*
+    EMIT TO SESSION ROOM
+    Helper function for all question socket events.
+    Why❔:
+    - create / update / delete all need the same logic:
+        1. check socket server exists
+        2. check question has a session code
+        3. build room name
+        4. emit event only to that room
+    keeps the code shorter & cleaner.
+    ( Create + Update + Delete )
+*/
+function emitToPresentationRoom(eventName, question, payload) {
+    if (!ioInstance) {
+        console.log("Socket.IO is not ready yet");
+        return;
+    }
+
+    if (!question || !question.code) {
+        console.log(`Cannot emit ${eventName} - missing session code`);
+        return;
+    }
+
+    const roomName = createPresentationRoom(question.code);
+
+    console.log(`Socket emit ${eventName} -> ${question._id} -> ${roomName}`);
+
+    ioInstance.to(roomName).emit(eventName, payload);
+}
+
+
+/*
+    EMIT QUESTION CREATED
+    Notify clients inside the correct session room
+    that a new question was created.
+        Used after:
+        POST /api/questions
+*/
+function emitQuestionCreated(question) {
+    emitToPresentationRoom("question:created", question, question);
+}
+
+
+/*
+    EMIT QUESTION UPDATED
+    Notify clients inside the correct session room
+    that a question was updated.
+        Used after:
+        PUT /api/questions/:id
+*/
+function emitQuestionUpdated(question) {
+    emitToPresentationRoom("question:updated", question, question);
+}
+
+
+/*
+    EMIT QUESTION DELETED
+    Notify clients inside the correct session room
+    that a question was deleted.
+        Used after:
+        DELETE /api/questions/:id
+*/
+function emitQuestionDeleted(question) {
+    emitToPresentationRoom("question:deleted", question, {
+        id: question._id,
+        code: question.code,
+        deletedQuestion: question
+    });
+}
+
+
+/*
+    EMIT SESSION PARTICIPANTS UPDATED
+    Notify clients inside the correct session room that the participant
+    list changed (someone joined).
+
+    Used after:
+        POST /api/sessions/:code/join   (see sessionController.joinSession)
+
+    The frontend listens via:
+        DLS_SOCKET.onSessionParticipantsUpdated(cb)   (see Api-dls.js)
+    which subscribes to the `session:participantsUpdated` event name below.
+*/
+function emitSessionParticipantsUpdated(sessionCode, payload) {
+    if (!ioInstance) {
+        console.log("Socket.IO is not ready yet");
+        return;
+    }
+
+    if (!sessionCode) {
+        console.log("Cannot emit session:participantsUpdated - missing sessionCode");
+        return;
+    }
+
+    // Reuse the existing room-name convention: presentation:<code>
+    const roomName = createPresentationRoom(sessionCode);
+
+    console.log(`Socket emit session:participantsUpdated -> ${roomName}`);
+
+    ioInstance.to(roomName).emit("session:participantsUpdated", payload);
+}
+
+
+/*
+    EXPORTS
+    Allow index.js and controllers to use socket functions.
+        ⚠️ If a function is not here,
+            other files cannot call it through socketManager.
+*/
 module.exports = {
     setupSocketServer,
+    emitQuestionCreated,
+    emitQuestionUpdated,
+    emitQuestionDeleted,
+    emitSessionParticipantsUpdated
 };
+
 

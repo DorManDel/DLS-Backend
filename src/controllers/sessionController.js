@@ -1,9 +1,13 @@
+
 // src/controllers/sessionController.js
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const Session = require('../models/Session');
 const User = require('../models/User');
+// Socket manager — used to broadcast participant updates to the session room.
+// Required lazily inside functions to avoid circular import issues at boot.
+const socketManager = require('../sockets/socket.manager.js');
 
 // Added detailed debug logs for development (only when NODE_ENV === 'development')
 const isDev = process.env.NODE_ENV === 'development' || process.argv.includes('nodemon');
@@ -181,20 +185,50 @@ async function joinSession(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Owner accessed session',
-      data: { code, pdfUrl: `/api/sessions/${code}/pdf` }
+      data: {
+        code,
+        pdfUrl: `/api/sessions/${code}/pdf`,
+        ownerId: session.owner,
+        participantsCount: session.participants.length
+      }
     });
   }
 
   // Use $addToSet to avoid duplicates.
   await Session.updateOne({ code }, { $addToSet: { participants: userId } }).exec();
 
-  // Placeholder for real‑time notification (later you can emit via socket.io)
-  // if (global.io) { global.io.to(code).emit('participant:joined', { userId }); }
+  // Reload the session so we can broadcast the authoritative participant count
+  // back to everyone in the room (including the lecturer's dashboard).
+  const updatedSession = await Session.findOne({ code }).lean().exec();
+
+  const participantPayload = {
+    code: updatedSession.code,
+    sessionCode: updatedSession.code,
+    participantsCount: updatedSession.participants.length,
+    participantIds: updatedSession.participants
+  };
+
+  // Real‑time notification — broadcasts `session:participantsUpdated` to all
+  // clients currently joined to room `presentation:<code>`. The frontend
+  // listens via DLS_SOCKET.onSessionParticipantsUpdated().
+  try {
+    if (typeof socketManager.emitSessionParticipantsUpdated === 'function') {
+      socketManager.emitSessionParticipantsUpdated(updatedSession.code, participantPayload);
+    }
+  } catch (socketErr) {
+    // Non-fatal: a socket.io outage should not block the join response.
+    console.error('Failed to emit session:participantsUpdated:', socketErr);
+  }
 
   return res.status(200).json({
     success: true,
     message: 'Joined session',
-    data: { code, pdfUrl: `/api/sessions/${code}/pdf` }
+    data: {
+      code,
+      pdfUrl: `/api/sessions/${code}/pdf`,
+      ownerId: updatedSession.owner,
+      participantsCount: updatedSession.participants.length
+    }
   });
 }
 
@@ -312,14 +346,17 @@ async function getRecentSessions(req, res) {
     const sessions = await Session.find({ participants: cleanUserId })
       .sort({ createdAt: -1 })
       .limit(max)
-      .select('code title createdAt participants')
+      // IMPORTANT: include `owner` in the select — the Mongoose schema field
+      // is `owner`, not `ownerId`. Without this, `session.owner` was undefined
+      // and the response returned `ownerId: undefined` for every recent session.
+      .select('code title owner createdAt participants')
       .lean()
       .exec();
 
     const payload = sessions.map(session => ({
       code: session.code,
-      ownerId: session.ownerId,
-      title: session.title ,
+      ownerId: session.owner,   // alias schema `owner` -> API `ownerId` for client consistency
+      title: session.title,
       date: session.createdAt
     }));
 
@@ -483,4 +520,6 @@ module.exports = {
   deleteSessionsByparticipant,
   removeParticipantFromAll
 };
+
+
 
