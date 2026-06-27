@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema({
     
-    code: { type: String, required: true, unique: true },
+    code: { type: String, required: true, unique: false },
     fileName: {
         type: String,
         default: null

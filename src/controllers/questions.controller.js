@@ -1,47 +1,5 @@
-const Question = require("../models/Questions"); // Use your actual Mongoose model
-const socketManager = require("../sockets/socket.manager");
-
-
-/*
-    GET /api/questions/:id
-    Return one question by id.
-
-    Status:
-    200 OK = question found
-    404 Not Found = question id does not exist
-*/
-function getQuestionById(req, res) {
-    const questionId = req.params.id;
-
-    const question = questionsStore.getQuestionById(questionId);
-
-    if (!question) {
-        return res.status(404).json({
-            success: false,
-            message: "Question not found",
-            data: null
-        });
-    }
-
-    res.status(200).json({
-        success: true,
-        message: "Question loaded successfully",
-        data: question
-    });
-
-
-
-
-    /* HTTP RESPONSE = Return normal REST response to Postman / frontend. */
-    res.status(201).json({
-        success: true,
-        message: "Question created successfully",
-        data: newQuestion
-    });
-}
-
-
-
+const Question = require("../models/Questions"); 
+const socketManager = require("/sockets/socket.manager");
 
 
 /*
@@ -113,9 +71,8 @@ function clearQuestionsForDebug(req, res) {
     });
 }
 
-
 module.exports = {
-    getQuestionById,
+    createQuestion: debugCreateQuestion,
     deleteQuestion,
     getQuestionsStats,
     clearQuestionsForDebug

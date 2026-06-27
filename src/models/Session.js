@@ -42,4 +42,3 @@ sessionSchema.pre('deleteOne', { document: true }, async function () {
 });
 
 module.exports = mongoose.model('Session', sessionSchema);
-
