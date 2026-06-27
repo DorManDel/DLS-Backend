@@ -5,6 +5,9 @@ const sessionCtrl = require('../controllers/sessionController.js');
 const { requireAuth, requireOwner } = require('../middleware/auth.js');
 
 const router = express.Router();
+
+/* END SESSION ROUTES */
+router.post("/:code/end", sessionCtrl.endSession);
 /**
  * GET    /api/sessions – list all sessions (metadata only)
  */

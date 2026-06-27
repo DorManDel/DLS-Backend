@@ -46,7 +46,7 @@ async function createSession(req, res) {
   try {
     // Expected body: { ownerId: <User ObjectId>, pdf: <file> }
     const { ownerId, title } = req.body;
-      if (isDev) console.log(`--- createSession body:  ---${req.body}`);
+    if (isDev) console.log(`--- createSession body:  ---${req.body}`);
     const file = req.file;
     if (isDev) console.log('ownerId from body:', ownerId);
     if (!ownerId || !file) {
@@ -494,7 +494,7 @@ async function removeParticipantFromAll(userId) {
   try {
     // $pull removes the specific value from the array across all matching documents
     const result = await Session.updateMany(
-      { participants: cleanUserId }, 
+      { participants: cleanUserId },
       { $pull: { participants: cleanUserId } }
     );
     console.log(`Removed user ${cleanUserId} from ${result.modifiedCount} session(s)`);
@@ -502,6 +502,60 @@ async function removeParticipantFromAll(userId) {
   } catch (error) {
     console.error('Error removing participant from sessions:', error);
     throw error;
+  }
+}
+
+/* END SESSION - to terminate them all... */
+async function endSession(req, res) {
+  try {
+    const code = String(req.params.code || req.body.code || "").trim();
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        message: "Session code is required",
+        data: null
+      });
+    }
+
+    const session = await Session.findOneAndUpdate(
+      { code },
+      {
+        status: "ended",
+        endedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: "Session not found",
+        data: null
+      });
+    }
+
+    socketManager.emitSessionEnded(code, {
+      sessionId: code
+    });
+
+    return res.json({
+      success: true,
+      message: "Session ended",
+      data: {
+        code,
+        status: "ended",
+        endedAt: session.endedAt
+      }
+    });
+  } catch (error) {
+    console.error("Error ending session:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      data: null
+    });
   }
 }
 
@@ -518,7 +572,8 @@ module.exports = {
   getRecentSessions,
   cleanupOrphanPdfs,
   deleteSessionsByparticipant,
-  removeParticipantFromAll
+  removeParticipantFromAll,
+  endSession
 };
 
 
