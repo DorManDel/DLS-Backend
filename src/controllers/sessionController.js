@@ -513,7 +513,7 @@ async function endSession(req, res) {
     if (!code) {
       return res.status(400).json({
         success: false,
-        message: "Session code is required",
+        message: "Missing session code.",
         data: null
       });
     }
