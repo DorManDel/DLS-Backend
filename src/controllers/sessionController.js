@@ -536,7 +536,8 @@ async function endSession(req, res) {
     }
 
     socketManager.emitSessionEnded(code, {
-      sessionId: code
+      sessionId: code,
+      status: "ended"
     });
 
     return res.json({
