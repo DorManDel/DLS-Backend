@@ -148,6 +148,7 @@ async function getQuestionById(req, res) {
 */
 async function createQuestion(req, res) {
     try {
+        console.log("[Q][POST] incoming body:", req.body);
         const code = readSessionCode(req.body);
 
         const { fileName, page, x, y, text, studentId, status } = req.body;
@@ -178,26 +179,18 @@ async function createQuestion(req, res) {
         });
 
         // DEBUG PRINT____
-        console.log("[Q][POST] incoming body:", req.body);
-
-        const createdQuestion = await Question.create(questionPayload);
-
         console.log("[Q][DB] saved question:", {
-            id: createdQuestion._id,
-            code: createdQuestion.code,
-            page: createdQuestion.page,
-            text: createdQuestion.text,
-            studentId: createdQuestion.studentId
+            id: newQuestion._id,
+            code: newQuestion.code,
+            page: newQuestion.page,
+            text: newQuestion.text,
+            studentId: newQuestion.studentId
         });
-
-        if (socketManager && typeof socketManager.emitQuestionCreated === "function") {
-            console.log("[Q][SOCKET] emitting question:created:", {
-                id: createdQuestion._id,
-                room: `presentation:${createdQuestion.code}`
-            });
-
-            socketManager.emitQuestionCreated(createdQuestion);
-        }
+        
+        console.log("[Q][SOCKET] emitting question:created:", {
+            id: newQuestion._id,
+            room: `presentation:${newQuestion.code}`
+        });
         //____
         /*
         [Q][POST] incoming body

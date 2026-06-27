@@ -119,8 +119,9 @@ function emitToPresentationRoom(eventName, question, payload) {
         return;
     }
 
-    //const roomName = createPresentationRoom(question.code);
-    // switched to advanced debug for test.
+    const roomName = createPresentationRoom(question.code);
+    
+    // ADDED: to advanced debug for test.
     const roomSize =
         ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
 
