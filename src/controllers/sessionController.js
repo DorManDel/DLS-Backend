@@ -50,7 +50,7 @@ async function createSession(req, res) {
     const file = req.file;
     if (isDev) console.log('ownerId from body:', ownerId);
     if (!ownerId || !file) {
-      return res.status(400).json({ success: false, message: 'ownerId (lecturer) and title are required' });
+      return res.status(400).json({ success: false, message: 'ownerId (lecturer) and file are required' });
     }
     // For PoC we relax ObjectId validation – accept any non‑empty string as ownerId
     if (typeof ownerId !== 'string' || ownerId.trim() === '') {
