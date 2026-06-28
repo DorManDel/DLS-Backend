@@ -85,6 +85,17 @@ function setupSocketServer(io) {
                 sessionId: data.sessionId,
                 roomName
             });
+
+            // Page Change:
+            socket.on("presentation:page-changed", function (pageData) {
+                const sessionId = pageData?.sessionId || pageData?.code;
+
+                if (!sessionId) {
+                    return;
+                }
+
+                socket.to(`presentation:${sessionId}`).emit("presentation:page-changed", pageData);
+            });
         });
 
 
