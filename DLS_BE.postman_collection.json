@@ -82,12 +82,36 @@
       "response": []
     },
     {
-      "name": "DLS_BE_deleteUser",
+      "name": "DLS_BE_userLogin_Error_invalidCredentials",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
-        "method": "DELETE",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"amit@example.com\",\r\n    \"password\": \"securepassword123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": "https://dls-backend-uelx.onrender.com/api/users/:UID",
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/login",
           "protocol": "https",
           "host": [
             "dls-backend-uelx",
@@ -97,12 +121,82 @@
           "path": [
             "api",
             "users",
-            ":UID"
+            "login"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_userLogin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"alextaazie@gmail.com\",\r\n    \"password\": \"Aa1234\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/login",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users",
+            "login"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_removeUser",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/users/:userId",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "users",
+            ":userId"
           ],
           "variable": [
             {
-              "key": "UID",
-              "value": ""
+              "key": "userId",
+              "value": "6a417947b81f85025344000f"
             }
           ]
         }
@@ -172,7 +266,51 @@
           "formdata": [
             {
               "key": "ownerId",
-              "value": "6a397f402e024d03829ec11e",
+              "value": "6a3c79c5e7b4eb04d06f41de",
+              "type": "text",
+              "uuid": "720bd83e-d103-404d-8fdc-3b2ae6f2845d"
+            },
+            {
+              "key": "pdf",
+              "type": "file",
+              "uuid": "3191858f-f186-4ae4-8fab-4d5bf55ee3fe",
+              "src": "/C:/Users/Alex/OneDrive/Studies/Web_and_Cloud_Engineering/FinalProject/SRS-DynamicLectureSystem.pdf"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_createSession_ERROR_userId",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a380797762df4a753dda554",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "ownerId",
+              "value": "6a3c79c5e7d06f41de",
               "type": "text",
               "uuid": "720bd83e-d103-404d-8fdc-3b2ae6f2845d"
             },
@@ -201,7 +339,115 @@
       "response": []
     },
     {
-      "name": "joinSession Copy",
+      "name": "DLS_BE_createSession_ERROR_PDF",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a380797762df4a753dda554",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "ownerId",
+              "value": "6a3c79c5e7b4eb04d06f41de",
+              "type": "text",
+              "uuid": "720bd83e-d103-404d-8fdc-3b2ae6f2845d"
+            },
+            {
+              "key": "pdf",
+              "type": "file",
+              "uuid": "3191858f-f186-4ae4-8fab-4d5bf55ee3fe",
+              "value": null
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "joinSession",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"6a3c79c5e7b4eb04d06f41de\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/2AA8AD/join",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "2AA8AD",
+            "join"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "joinSession_ERROR_SessionId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"6a380797762df4a753dda554\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/DE72B5/join",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "DE72B5",
+            "join"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "joinSession_ERROR_userId",
       "request": {
         "method": "POST",
         "header": [],
@@ -253,7 +499,35 @@
           "variable": [
             {
               "key": "sessionID",
-              "value": ""
+              "value": "2AA8AD"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getSessionMetadata_ERROR",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionID",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            ":sessionID"
+          ],
+          "variable": [
+            {
+              "key": "sessionID",
+              "value": "2AA8A"
             }
           ]
         }
@@ -266,7 +540,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/DE72B5/pdf",
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionID/pdf",
           "protocol": "https",
           "host": [
             "dls-backend-uelx",
@@ -276,7 +550,36 @@
           "path": [
             "api",
             "sessions",
-            "DE72B5",
+            ":sessionID",
+            "pdf"
+          ],
+          "variable": [
+            {
+              "key": "sessionID",
+              "value": "2AA8AD"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getPDF_ERROR",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/asdfaf/pdf",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "asdfaf",
             "pdf"
           ]
         }
@@ -306,6 +609,40 @@
     },
     {
       "name": "DLS_BE_deleteSession",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a397f402e024d03829ec11e",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:sessionID",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            ":sessionID"
+          ],
+          "variable": [
+            {
+              "key": "sessionID",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_deleteSession_Error",
       "request": {
         "method": "DELETE",
         "header": [
@@ -397,7 +734,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent?userId=:USERID:&limit=5",
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent?userId=6a417947b81f85025344000f&limit=5",
           "protocol": "https",
           "host": [
             "dls-backend-uelx",
@@ -412,11 +749,315 @@
           "query": [
             {
               "key": "userId",
-              "value": ":USERID:"
+              "value": "6a417947b81f85025344000f"
             },
             {
               "key": "limit",
               "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_recentSessions4User_ERROR",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/recent?userId=&limit=5",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "recent"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": ""
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getHealthCheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/health",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_geAllQuestions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/questions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "questions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_createQuestion",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sessionId\": \"2AA8AD\", \r\n  \"page\": 1,\r\n  \"x\": 45.2,\r\n  \"y\": 12.8,\r\n  \"text\": \"Can you explain how this algorithm scales?\",\r\n  \"fileName\": \"lecture_1.pdf\",\r\n  \"studentId\": \"6a417947b81f85025344000f\",\r\n  \"status\": \"open\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/questions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "questions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_createQuestion_ERROR_userId",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sessionId\": \"2AA8AD\", \r\n  \"page\": 1,\r\n  \"x\": 45.2,\r\n  \"y\": 12.8,\r\n  \"text\": \"Can you explain how this algorithm scales?\",\r\n  \"fileName\": \"lecture_1.pdf\",\r\n  \"studentId\": \"6a4b81f85025344000f\",\r\n  \"status\": \"open\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/questions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "questions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_getQuestion_withFilters",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/questions",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "sessionId",
+              "value": "2AA8AD",
+              "description": "Filter by the lecture room short code.",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Filter for questions on a specific slide page number.",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "status",
+              "value": "open",
+              "description": "Filter by status (e.g., open, resolved).",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "studentId",
+              "value": "6a417947b81f85025344000f",
+              "description": "Filter for a specific student's questions.",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "search",
+              "value": "algorithm",
+              "description": "Performs a case-insensitive regex search inside the question text.",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_listSessionParticipants",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/:code/participants",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            ":code",
+            "participants"
+          ],
+          "variable": [
+            {
+              "key": "code",
+              "value": "2AA8AD"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_cleanupOrphanedSessions",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a380797762df4a753dda554",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/cleanup/orphaned?=6a417947b81f85025344000f",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "cleanup",
+            "orphaned"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": "6a417947b81f85025344000f"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DLS_BE_deleteSessions_forUser",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-user-id",
+            "value": "6a380797762df4a753dda554",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://dls-backend-uelx.onrender.com/api/sessions/cleanup/participant/:userId",
+          "protocol": "https",
+          "host": [
+            "dls-backend-uelx",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "sessions",
+            "cleanup",
+            "participant",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "6a417947b81f85025344000f"
             }
           ]
         }
