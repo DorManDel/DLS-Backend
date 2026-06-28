@@ -5,6 +5,7 @@ const sessionCtrl = require('../controllers/sessionController.js');
 const { requireAuth, requireOwner } = require('../middleware/auth.js');
 
 const router = express.Router();
+
 /**
  * GET    /api/sessions – list all sessions (metadata only)
  */
@@ -46,6 +47,12 @@ router.get('/:code/pdf', sessionCtrl.streamPdf);
  * POST   /api/sessions/:code/join – add a participant (body field "userId")
  */
 router.post('/:code/join', sessionCtrl.joinSession);
+
+/**
+ * POST /api/sessions/:code/end
+ * End a live session and notify all connected clients.
+ */
+router.post("/:code/end", sessionCtrl.endSession);
 
 /**
  * GET    /api/sessions/:code – session metadata (no PDF)

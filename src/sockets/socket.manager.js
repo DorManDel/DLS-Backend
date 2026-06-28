@@ -73,12 +73,28 @@ function setupSocketServer(io) {
             const roomName = createPresentationRoom(data.sessionId);
 
             socket.join(roomName);
+            // added debug to see num of users:
+            const roomSize =
+                ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
+
+            console.log(`[SOCKET][JOIN] ${socket.id} joined ${roomName}. roomSize=${roomSize}`);
 
             console.log(`Socket ${socket.id} joined room ${roomName}`);
 
             socket.emit("presentation:joined", {
                 sessionId: data.sessionId,
                 roomName
+            });
+
+            // Page Change:
+            socket.on("presentation:page-changed", function (pageData) {
+                const sessionId = pageData?.sessionId || pageData?.code;
+
+                if (!sessionId) {
+                    return;
+                }
+
+                socket.to(`presentation:${sessionId}`).emit("presentation:page-changed", pageData);
             });
         });
 
@@ -115,6 +131,12 @@ function emitToPresentationRoom(eventName, question, payload) {
     }
 
     const roomName = createPresentationRoom(question.code);
+
+    // ADDED: to advanced debug for test.
+    const roomSize =
+        ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
+
+    console.log(`[SOCKET][EMIT] ${eventName} -> ${question._id} -> ${roomName}. roomSize=${roomSize}`);
 
     console.log(`Socket emit ${eventName} -> ${question._id} -> ${roomName}`);
 
@@ -193,6 +215,32 @@ function emitSessionParticipantsUpdated(sessionCode, payload) {
     ioInstance.to(roomName).emit("session:participantsUpdated", payload);
 }
 
+// ADDDED for TErminate session 4 All :
+function emitSessionEnded(sessionCode, payload = {}) {
+    if (!ioInstance) {
+        console.log("Socket.IO is not ready yet");
+        return;
+    }
+
+    if (!sessionCode) {
+        console.log("Cannot emit session:ended - missing session code");
+        return;
+    }
+
+    const roomName = createPresentationRoom(sessionCode);
+
+    const roomSize =
+        ioInstance.sockets.adapter.rooms.get(roomName)?.size || 0;
+
+    console.log(`[SOCKET][EMIT] session:ended -> ${roomName}. roomSize=${roomSize}`);
+
+    ioInstance.to(roomName).emit("session:ended", {
+        code: sessionCode,
+        endedAt: new Date().toISOString(),
+        ...payload
+    });
+}
+
 
 /*
     EXPORTS
@@ -205,7 +253,8 @@ module.exports = {
     emitQuestionCreated,
     emitQuestionUpdated,
     emitQuestionDeleted,
-    emitSessionParticipantsUpdated
+    emitSessionParticipantsUpdated,
+    emitSessionEnded
 };
 
 

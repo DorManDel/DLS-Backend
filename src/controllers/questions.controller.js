@@ -148,6 +148,7 @@ async function getQuestionById(req, res) {
 */
 async function createQuestion(req, res) {
     try {
+        console.log("[Q][POST] incoming body:", req.body);
         const code = readSessionCode(req.body);
 
         const { fileName, page, x, y, text, studentId, status } = req.body;
@@ -176,6 +177,26 @@ async function createQuestion(req, res) {
             status: status || "open",
             studentId: studentId || null
         });
+
+        // DEBUG PRINT____
+        console.log("[Q][DB] saved question:", {
+            id: newQuestion._id,
+            code: newQuestion.code,
+            page: newQuestion.page,
+            text: newQuestion.text,
+            studentId: newQuestion.studentId
+        });
+        
+        console.log("[Q][SOCKET] emitting question:created:", {
+            id: newQuestion._id,
+            room: `presentation:${newQuestion.code}`
+        });
+        //____
+        /*
+        [Q][POST] incoming body
+        [Q][DB] saved question
+        [Q][SOCKET] emitting question:created
+        */
 
         /* SOCKET EVENT = Notify everyone in this session's room. */
         socketManager.emitQuestionCreated(newQuestion);
@@ -258,6 +279,7 @@ async function updateQuestion(req, res) {
 /*
     DELETE /api/questions/:id
     Delete one question by id.
+
     Status:
     200 OK = question deleted
     404 Not Found = question id does not exist
