@@ -35,3 +35,8 @@ The primary external service is the custom DLS backend API (REST endpoints for u
 A Google Calendar iframe is embedded for demonstration.
 Google Fonts are loaded for styling.
 All network communication uses the browser’s native Fetch API.
+
+
+POSTMAN LINK:
+
+https://wntrb1st-6589366.postman.co/workspace/yotam-wntrb's-Workspace~e10001c2-2a1d-4108-8b48-55d61a2c34a4/request/54631479-644eec6d-7064-43f7-baaf-0398f8db7ab8?tab=params
