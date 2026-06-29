@@ -17,6 +17,8 @@ node_modules/
 *.temp
 
 # others
+Part_B.code-workspace1.code-workspace
+Setup_Archive/
 node_modules/
 .env
 .DS_Store
@@ -25,6 +27,8 @@ testConnection.js
 TDL+Architecture.md
 TDL.md
 noZip/
+Links.txt
+LOCAL.postman_collection.json
 # all PDFs
 *.pdf
 
