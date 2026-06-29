@@ -148,7 +148,7 @@ Frontend / Postman
 | File Upload | <img src="https://img.shields.io/badge/Multer-Upload_Middleware-7C3AED" alt="Multer" /> | Receives multipart/form-data PDF uploads |
 |  Optional File Streaming | <img src="https://img.shields.io/badge/GridFS-Prepared_File_Streaming-4F46E5" alt="GridFS" /> | Installed / prepared for MongoDB file streaming; verify active usage before claiming it as the main PDF storage flow  |
 | Config | <img src="https://img.shields.io/badge/dotenv-Environment_Config-ECD53F" alt="dotenv" /> | Loads local environment variables from `.env` |
-| Auth Foundation | <img src="https://img.shields.io/badge/JWT-Prepared_Auth-000000?logo=jsonwebtokens&logoColor=white" alt="JWT" /> | Installed / prepared for token-based authentication; current auth flow should be verified before marking JWT as active |עןא 
+| Auth Foundation | <img src="https://img.shields.io/badge/JWT-Prepared_Auth-000000?logo=jsonwebtokens&logoColor=white" alt="JWT" /> | Installed / prepared for token-based authentication; current auth flow should be verified before marking JWT as active | 
 | API Testing | <img src="https://img.shields.io/badge/Postman-API_Workspace-FF6C37?logo=postman&logoColor=white" alt="Postman" /> | Tests and documents backend requests |
 | Deployment | <img src="https://img.shields.io/badge/Render-Live_Backend-46E3B7?logo=render&logoColor=black" alt="Render" /> | Hosts the live backend service |
 
